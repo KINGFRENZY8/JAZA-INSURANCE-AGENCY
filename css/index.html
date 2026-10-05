@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jaza Insurance Agency | Trusted Insurance Plans in Kenya</title>
+  <meta name="description" content="Motor, medical, home and travel insurance from Jaza Insurance Agency.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- NAVBAR: copy this block into every page; change which link has class="active" -->
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <img src="images/logo.png" alt="Jaza Insurance Agency" height="56">
+    </a>
+    <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">Menu</button>
+    <nav class="main-nav" aria-label="Main">
+      <a class="active" href="index.html">Home</a>
+      <div class="has-dropdown">
+        <a href="motor.html">Motor Insurance</a>
+        <div class="dropdown">
+          <a href="motor.html#third-party">Third party</a>
+          <a href="motor.html#comprehensive">Comprehensive</a>
+          <a href="motor.html#psv-comprehensive">PSV comprehensive</a>
+          <a href="motor.html#psv-third-party">PSV third party</a>
+        </div>
+      </div>
+      <div class="has-dropdown">
+        <a href="medical.html">Medical Insurance</a>
+        <div class="dropdown">
+          <a href="medical.html#individual">Individual medical</a>
+          <a href="medical.html#corporate">Corporate medical</a>
+          <a href="medical.html#seniors">Seniors medical</a>
+          <a href="medical.html#personal-accident">Personal accident cover</a>
+        </div>
+      </div>
+      <div class="has-dropdown">
+        <a href="home-insurance.html">Home Insurance</a>
+        <div class="dropdown">
+          <a href="home-insurance.html#buildings">Buildings cover</a>
+          <a href="home-insurance.html#contents">Contents cover</a>
+          <a href="home-insurance.html#quote-home-form">Get a home quote</a>
+        </div>
+      </div>
+      <div class="has-dropdown">
+        <a href="travel.html">Travel Insurance</a>
+        <div class="dropdown">
+          <a href="travel.html#trip-quote">Request a travel quote</a>
+          <a href="travel.html#coverage">What is covered</a>
+          <a href="travel.html#claims">How to claim</a>
+        </div>
+      </div>
+      <a href="about.html">About Us</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-photo" role="img" aria-label="Family standing in front of their home"></div>
+      <div class="hero-text">
+        <p class="hero-tag">Reliable Kenyan protection</p>
+        <h1>Trusted insurance plans for your peace of mind</h1>
+        <p>Cover your car, your health, your home and your travels with plans explained in plain language.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#quote">Get a quote</a>
+          <a class="btn btn-ghost" href="#covers">See our covers</a>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- SCROLLYTELLING: images stay pinned while the steps scroll past -->
+    <section class="story" id="story" aria-labelledby="story-title">
+      <div class="story-head">
+        <p class="hero-tag">Life moves. Your cover should too.</p>
+        <h2 id="story-title">Four ways Jaza keeps you covered</h2>
+      </div>
+      <div class="story-layout">
+        <div class="story-media" aria-hidden="false">
+          <img class="story-img is-active" src="images/motor.jpg" alt="Couple holding car keys beside their SUV in the city" width="1280" height="715"><img class="story-img" src="images/home.jpg" alt="Family standing in front of their home" loading="lazy" width="1280" height="715"><img class="story-img" src="images/travel.jpg" alt="Couple with passports and luggage at the airport" loading="lazy" width="1280" height="715"><img class="story-img" src="images/medical.jpg" alt="Doctor talking with a mother and her son in a clinic" loading="lazy" width="1280" height="715">
+          <div class="story-dots" aria-hidden="true"><span class="story-dot is-active"></span><span class="story-dot"></span><span class="story-dot"></span><span class="story-dot"></span></div>
+        </div>
+        <div class="story-steps">
+        <article class="story-step is-active" data-index="0">
+          <div class="story-card">
+            <span class="story-num">01 / 04</span>
+            <h3>Drive with confidence</h3>
+            <p>From the legal minimum to full cover for your own car, private or commercial.</p>
+            <a class="btn btn-primary" href="motor.html">Explore motor cover</a>
+          </div>
+        </article>
+        <article class="story-step" data-index="1">
+          <div class="story-card">
+            <span class="story-num">02 / 04</span>
+            <h3>Protect what you have built</h3>
+            <p>Cover for your house and belongings against fire, theft and damage.</p>
+            <a class="btn btn-primary" href="home-insurance.html">Explore home cover</a>
+          </div>
+        </article>
+        <article class="story-step" data-index="2">
+          <div class="story-card">
+            <span class="story-num">03 / 04</span>
+            <h3>Go further, worry less</h3>
+            <p>Medical costs, delays and lost luggage covered while you are away.</p>
+            <a class="btn btn-primary" href="travel.html">Explore travel cover</a>
+          </div>
+        </article>
+        <article class="story-step" data-index="3">
+          <div class="story-card">
+            <span class="story-num">04 / 04</span>
+            <h3>Care when it counts</h3>
+            <p>Inpatient and outpatient plans for you, your family or your staff.</p>
+            <a class="btn btn-primary" href="medical.html">Explore medical cover</a>
+          </div>
+        </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- INSURANCE CARDS -->
+    <section class="section" id="covers">
+      <h2>What would you like to cover?</h2>
+      <div class="cards">
+        <a class="card" href="motor.html">
+          <img class="card-img" src="images/motor.jpg" alt="Couple holding car keys beside their SUV in the city" loading="lazy" width="1280" height="715">
+          <div class="card-body"><h3>Motor insurance</h3>
+          <p>Third-party and comprehensive cover for private and commercial vehicles.</p></div>
+        </a>
+        <a class="card" href="home-insurance.html">
+          <img class="card-img" src="images/home.jpg" alt="Family standing in front of their home" loading="lazy" width="1280" height="715">
+          <div class="card-body"><h3>Home insurance</h3>
+          <p>Protect your house and belongings against fire, theft and damage.</p></div>
+        </a>
+        <a class="card" href="travel.html">
+          <img class="card-img" src="images/travel.jpg" alt="Couple with passports and luggage at the airport" loading="lazy" width="1280" height="715">
+          <div class="card-body"><h3>Travel insurance</h3>
+          <p>Cover for medical costs, delays and lost luggage while you are away.</p></div>
+        </a>
+        <a class="card" href="medical.html">
+          <img class="card-img" src="images/medical.jpg" alt="Doctor talking with a mother and her son in a clinic" loading="lazy" width="1280" height="715">
+          <div class="card-body"><h3>Medical insurance</h3>
+          <p>Inpatient and outpatient plans for you and your family.</p></div>
+        </a>
+      </div>
+    </section>
+
+    <!-- QUOTE FORM (frontend only for now; the backend comes later) -->
+    <section class="section section-alt" id="quote">
+      <h2>Request a quote</h2>
+      <form class="quote-form" id="quote-form" novalidate>
+        <label>Full name
+          <input type="text" name="name" autocomplete="name" required>
+        </label>
+        <label>Phone number
+          <input type="tel" name="phone" autocomplete="tel" required>
+        </label>
+        <label>Insurance type
+          <select name="type" required>
+            <option value="">Choose one</option>
+            <option>Motor</option>
+            <option>Medical</option>
+            <option>Home</option>
+            <option>Travel</option>
+          </select>
+        </label>
+        <button class="btn btn-primary" type="submit">Send request</button>
+        <p class="form-message" id="form-message" role="status"></p>
+      </form>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p><strong>Jaza Insurance Agency</strong></p>
+    <p>Phone: <a href="tel:+254794794410">0794 794 410</a> &nbsp;|&nbsp; Email: <a href="mailto:info@jia.co.ke">info@jia.co.ke</a></p>
+    <p>Regulated by the Insurance Regulatory Authority: [add licence details]</p>
+    <p class="social"><a href="https://at.linkedin.com/company/advanta-africa-ltd" target="_blank" rel="noopener">LinkedIn</a> &nbsp;|&nbsp; <a href="https://www.facebook.com/people/Advanta-SMS/100057590343710/#" target="_blank" rel="noopener">Facebook</a></p>
+    <p class="copyright">&copy; 2026 Jaza Insurance Agency</p>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

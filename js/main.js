@@ -118,3 +118,73 @@ if (excessSlider) {
     excessText.textContent = notes[excessSlider.value];
   });
 }
+
+// 6. Scrollytelling on the home page: the image changes as each step scrolls into view
+const storySteps = document.querySelectorAll(".story-step");
+if (storySteps.length && "IntersectionObserver" in window) {
+  const storyImgs = document.querySelectorAll(".story-img");
+  const storyDots = document.querySelectorAll(".story-dot");
+
+  const showStep = (index) => {
+    storySteps.forEach((el, i) => el.classList.toggle("is-active", i === index));
+    storyImgs.forEach((el, i) => el.classList.toggle("is-active", i === index));
+    storyDots.forEach((el, i) => el.classList.toggle("is-active", i === index));
+  };
+
+  // A step becomes active when it crosses a thin band of the screen.
+  // Desktop: the middle of the screen. Phones: just below the pinned image.
+  let observer;
+  const watchSteps = () => {
+    if (observer) observer.disconnect();
+    const media = document.querySelector(".story-media").getBoundingClientRect();
+    const isPhone = window.matchMedia("(max-width: 860px)").matches;
+    const vh = window.innerHeight;
+    const band = isPhone ? Math.min(media.bottom + 24, vh - 40) : vh * 0.5;
+    observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) showStep(Number(entry.target.dataset.index));
+        });
+      },
+      { rootMargin: `-${Math.round(band)}px 0px -${Math.round(vh - band - 2)}px 0px` }
+    );
+    storySteps.forEach((step) => observer.observe(step));
+  };
+  watchSteps();
+  window.addEventListener("resize", watchSteps);
+}
+
+// 7. About page: reading progress bar, fade-in on scroll, and the chapter story
+if (document.querySelector(".about")) {
+  document.documentElement.classList.add("js");
+
+  const bar = document.querySelector(".read-progress");
+  const updateBar = () => {
+    const h = document.documentElement;
+    bar.style.transform = `scaleX(${h.scrollTop / (h.scrollHeight - h.clientHeight || 1)})`;
+  };
+  window.addEventListener("scroll", updateBar, { passive: true });
+  updateBar();
+
+  const reveal = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (e.isIntersecting) { e.target.classList.add("in"); reveal.unobserve(e.target); }
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll(".reveal").forEach((el) => reveal.observe(el));
+
+  const chapters = [...document.querySelectorAll(".chapter")];
+  const num = document.querySelector(".chapter-num");
+  const label = document.querySelector(".chapter-label");
+  const fill = document.querySelector(".chapter-bar i");
+  const chapterWatcher = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (!e.isIntersecting) return;
+      chapters.forEach((c) => c.classList.toggle("is-active", c === e.target));
+      num.textContent = e.target.dataset.num;
+      label.textContent = e.target.dataset.label;
+      fill.style.height = ((chapters.indexOf(e.target) + 1) / chapters.length) * 100 + "%";
+    });
+  }, { rootMargin: "-45% 0px -45% 0px" });
+  chapters.forEach((c) => chapterWatcher.observe(c));
+}
