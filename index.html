@@ -15,15 +15,29 @@
   <!-- NAVBAR: copy this block into every page; change which link has class="active" -->
   <header class="site-header">
     <a class="brand" href="index.html">
-      <!-- Later, replace this text logo with: <img src="images/logo.png" alt="Jaza Insurance Agency"> -->
-      <span class="brand-mark">J<span>I</span>A</span>
-      <span class="brand-name">Jaza Insurance Agency</span>
+      <img src="images/logo.png" alt="Jaza Insurance Agency" height="56">
     </a>
     <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">Menu</button>
     <nav class="main-nav" aria-label="Main">
       <a class="active" href="index.html">Home</a>
-      <a href="motor.html">Motor Insurance</a>
-      <a href="medical.html">Medical Insurance</a>
+      <div class="has-dropdown">
+        <a href="motor.html">Motor Insurance</a>
+        <div class="dropdown">
+          <a href="motor.html#third-party">Third party</a>
+          <a href="motor.html#comprehensive">Comprehensive</a>
+          <a href="motor.html#psv-comprehensive">PSV comprehensive</a>
+          <a href="motor.html#psv-third-party">PSV third party</a>
+        </div>
+      </div>
+      <div class="has-dropdown">
+        <a href="medical.html">Medical Insurance</a>
+        <div class="dropdown">
+          <a href="medical.html#individual">Individual medical</a>
+          <a href="medical.html#corporate">Corporate medical</a>
+          <a href="medical.html#seniors">Seniors medical</a>
+          <a href="medical.html#personal-accident">Personal accident cover</a>
+        </div>
+      </div>
       <a href="home-insurance.html">Home Insurance</a>
       <a href="travel.html">Travel Insurance</a>
       <a href="about.html">About Us</a>
@@ -95,7 +109,7 @@
 
   <footer class="site-footer">
     <p><strong>Jaza Insurance Agency</strong></p>
-    <p>Phone: [add your number] &nbsp;|&nbsp; Email: [add your email]</p>
+    <p>Phone: <a href="tel:+254794794410">0794 794 410</a> &nbsp;|&nbsp; Email: <a href="mailto:info@jia.co.ke">info@jia.co.ke</a></p>
     <p>Regulated by the Insurance Regulatory Authority: [add licence details]</p>
     <p class="copyright">&copy; 2026 Jaza Insurance Agency</p>
   </footer>
