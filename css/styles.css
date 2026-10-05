@@ -125,14 +125,14 @@ a { color: inherit; text-decoration: none; }
 }
 
 /* 12. Travel page: form and expandable details */
-.travel-form { display: grid; gap: 16px; margin-top: 18px; }
-.travel-form label { display: grid; gap: 6px; font-weight: 600; }
-.travel-form input[type="text"], .travel-form input[type="tel"], .travel-form input[type="date"], .travel-form input[type="number"] {
+.module-form { display: grid; gap: 16px; margin-top: 18px; }
+.module-form label { display: grid; gap: 6px; font-weight: 600; }
+.module-form input[type="text"], .module-form input[type="tel"], .module-form input[type="date"], .module-form input[type="number"] {
   padding: 12px; border: 1px solid #b9c5d3; border-radius: 6px; font: inherit; background: #fff;
 }
-.travel-form fieldset { border: 1px solid #dbe3ec; border-radius: 8px; padding: 14px 16px; display: grid; gap: 8px; }
-.travel-form legend { font-weight: 800; color: var(--navy); padding: 0 6px; }
-.travel-form fieldset label { display: flex; align-items: center; gap: 10px; font-weight: 400; }
+.module-form fieldset { border: 1px solid #dbe3ec; border-radius: 8px; padding: 14px 16px; display: grid; gap: 8px; }
+.module-form legend { font-weight: 800; color: var(--navy); padding: 0 6px; }
+.module-form fieldset label { display: flex; align-items: center; gap: 10px; font-weight: 400; }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .product ol { padding-left: 22px; }
 .product ol li { margin-bottom: 6px; }
@@ -140,3 +140,11 @@ details { border: 1px solid #dbe3ec; border-radius: 8px; padding: 14px 16px; mar
 summary { font-weight: 600; color: var(--navy); cursor: pointer; }
 details p { margin-top: 10px; }
 @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+
+/* 13. Alignment: every module uses the same width and spacing */
+.module-form select { padding: 12px; border: 1px solid #b9c5d3; border-radius: 6px; font: inherit; background: #fff; }
+.module-form input[type="range"] { width: 100%; accent-color: var(--orange); }
+.product { scroll-margin-top: 100px; }
+.product > h2 { font-size: 1.6rem; }
+.product > p { max-width: 70ch; }
+.module-form { max-width: 640px; }

@@ -107,6 +107,37 @@
         <a class="btn btn-outline" href="tel:+254794794410">Call 0794 794 410</a>
       </div>
     </section>
+
+      <section class="product" id="quote-medical-form">
+        <h2>Request a medical quote</h2>
+        <p>Tell us who needs cover and we will call you with options.</p>
+        <form class="module-form lead-form" id="medical-form" novalidate>
+          <label>Plan type
+            <select name="cover" required>
+              <option value="">Choose one</option>
+              <option>Individual medical</option>
+              <option>Corporate medical</option>
+              <option>Seniors medical</option>
+              <option>Personal accident cover</option>
+            </select>
+          </label>
+          <label>Number of people to cover <input type="number" name="people" min="1" value="1"></label>
+          <label>Company name (corporate plans only) <input type="text" name="company"></label>
+          <label>Full name <input type="text" name="name" autocomplete="name" required></label>
+          <label>Phone number <input type="tel" name="phone" autocomplete="tel" required></label>
+          <button class="btn btn-primary" type="submit">Request quote</button>
+          <p class="form-message" role="status"></p>
+        </form>
+      </section>
+
+      <section class="product" id="claims">
+        <h2>How to make a claim</h2>
+        <ol>
+          <li>Call us on <a href="tel:+254794794410">0794 794 410</a> or email <a href="mailto:info@jia.co.ke">info@jia.co.ke</a> as soon as you can.</li>
+          <li>For planned treatment, ask us about pre-authorisation before you go to hospital.</li>
+          <li>Keep your receipts and medical reports and send them to us so we can follow up with the insurer.</li>
+        </ol>
+      </section>
     </div>
     <p class="note">Cover, limits and exclusions depend on the insurer and the policy you choose. Contact us for the exact terms before you buy.</p>
   </main>
