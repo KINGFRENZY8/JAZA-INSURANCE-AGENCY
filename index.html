@@ -1,11 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jaza Insurance Agency | Trusted Insurance Plans in Kenya</title>
+  <meta name="description" content="Motor, medical, home and travel insurance from Jaza Insurance Agency.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <h1>JAZA INSURANCE AGENCY</h1>
+
+  <!-- NAVBAR: copy this block into every page; change which link has class="active" -->
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <!-- Later, replace this text logo with: <img src="images/logo.png" alt="Jaza Insurance Agency"> -->
+      <span class="brand-mark">J<span>I</span>A</span>
+      <span class="brand-name">Jaza Insurance Agency</span>
+    </a>
+    <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">Menu</button>
+    <nav class="main-nav" aria-label="Main">
+      <a class="active" href="index.html">Home</a>
+      <a href="motor.html">Motor Insurance</a>
+      <a href="medical.html">Medical Insurance</a>
+      <a href="home-insurance.html">Home Insurance</a>
+      <a href="travel.html">Travel Insurance</a>
+      <a href="about.html">About Us</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-photo" role="img" aria-label="Insurance agents standing in front of a home"></div>
+      <div class="hero-text">
+        <p class="hero-tag">Reliable Kenyan protection</p>
+        <h1>Trusted insurance plans for your peace of mind</h1>
+        <p>Cover your car, your health, your home and your travels with plans explained in plain language.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#quote">Get a quote</a>
+          <a class="btn btn-ghost" href="#covers">See our covers</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- INSURANCE CARDS -->
+    <section class="section" id="covers">
+      <h2>What would you like to cover?</h2>
+      <div class="cards">
+        <a class="card" href="motor.html">
+          <h3>Motor insurance</h3>
+          <p>Third-party and comprehensive cover for private and commercial vehicles.</p>
+        </a>
+        <a class="card" href="medical.html">
+          <h3>Medical insurance</h3>
+          <p>Inpatient and outpatient plans for you and your family.</p>
+        </a>
+        <a class="card" href="home-insurance.html">
+          <h3>Home insurance</h3>
+          <p>Protect your house and belongings against fire, theft and damage.</p>
+        </a>
+        <a class="card" href="travel.html">
+          <h3>Travel insurance</h3>
+          <p>Cover for medical costs, delays and lost luggage while you are away.</p>
+        </a>
+      </div>
+    </section>
+
+    <!-- QUOTE FORM (frontend only for now; the backend comes later) -->
+    <section class="section section-alt" id="quote">
+      <h2>Request a quote</h2>
+      <form class="quote-form" id="quote-form" novalidate>
+        <label>Full name
+          <input type="text" name="name" autocomplete="name" required>
+        </label>
+        <label>Phone number
+          <input type="tel" name="phone" autocomplete="tel" required>
+        </label>
+        <label>Insurance type
+          <select name="type" required>
+            <option value="">Choose one</option>
+            <option>Motor</option>
+            <option>Medical</option>
+            <option>Home</option>
+            <option>Travel</option>
+          </select>
+        </label>
+        <button class="btn btn-primary" type="submit">Send request</button>
+        <p class="form-message" id="form-message" role="status"></p>
+      </form>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p><strong>Jaza Insurance Agency</strong></p>
+    <p>Phone: [add your number] &nbsp;|&nbsp; Email: [add your email]</p>
+    <p>Regulated by the Insurance Regulatory Authority: [add licence details]</p>
+    <p class="copyright">&copy; 2026 Jaza Insurance Agency</p>
+  </footer>
+
+  <script src="js/main.js"></script>
 </body>
 </html>
