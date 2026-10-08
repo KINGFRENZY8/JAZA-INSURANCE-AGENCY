@@ -152,13 +152,14 @@
     <!-- QUOTE FORM (frontend only for now; the backend comes later) -->
     <section class="section section-alt" id="quote">
       <h2>Request a quote</h2>
-      <form class="quote-form" id="quote-form" novalidate>
+      <form class="quote-form" id="quote-form" data-form-type="general" novalidate>
         <label>Full name
           <input type="text" name="name" autocomplete="name" required>
         </label>
         <label>Phone number
           <input type="tel" name="phone" autocomplete="tel" required>
         </label>
+          <label>Email (optional) <input type="email" name="email" autocomplete="email"></label>
         <label>Insurance type
           <select name="type" required>
             <option value="">Choose one</option>
@@ -168,7 +169,9 @@
             <option>Travel</option>
           </select>
         </label>
-        <button class="btn btn-primary" type="submit">Send request</button>
+                  <div class="hp" aria-hidden="true"><label>Leave this empty <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+          <label class="consent"><input type="checkbox" name="consent" required> I agree that Jaza Insurance Agency may use my details to contact me about this request.</label>
+          <button class="btn btn-primary" type="submit">Send request</button>
         <p class="form-message" id="form-message" role="status"></p>
       </form>
     </section>

@@ -68,7 +68,7 @@
       <section class="product" id="trip-quote">
         <h2>Tell us about your trip</h2>
         <p>Fill in your trip details and we will send you a quote.</p>
-        <form class="module-form" id="travel-form" novalidate>
+        <form class="module-form" id="travel-form" data-form-type="travel" novalidate>
           <fieldset>
             <legend>Where are you travelling?</legend>
             <label><input type="radio" name="direction" value="Outbound" checked> Leaving Kenya</label>
@@ -96,6 +96,9 @@
 
           <label>Full name <input type="text" name="name" autocomplete="name" required></label>
           <label>Phone number <input type="tel" name="phone" autocomplete="tel" required></label>
+          <label>Email (optional) <input type="email" name="email" autocomplete="email"></label>
+                    <div class="hp" aria-hidden="true"><label>Leave this empty <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+          <label class="consent"><input type="checkbox" name="consent" required> I agree that Jaza Insurance Agency may use my details to contact me about this request.</label>
           <button class="btn btn-primary" type="submit">Request travel quote</button>
           <p class="form-message" id="travel-message" role="status"></p>
         </form>

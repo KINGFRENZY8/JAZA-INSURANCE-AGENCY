@@ -7,100 +7,64 @@ toggle.addEventListener("click", () => {
   toggle.setAttribute("aria-expanded", isOpen);
 });
 
-// 2. Quote form: check the fields before "sending".
-// Nothing is saved yet. The backend will receive this data later.
-const form = document.querySelector("#quote-form");
-const message = document.querySelector("#form-message");
+// 2. Forms: check the details, then send them to our API, which emails the insurance team.
+// When you deploy the backend, change API_URL to its live address (no slash at the end).
+const API_URL = "http://localhost:3000";
 
-if (form) {
-  form.addEventListener("submit", (event) => {
+// Collects every field in a form. Checkboxes with the same name (add-ons) become a list.
+function formToObject(form) {
+  const result = {};
+  for (const [key, value] of new FormData(form).entries()) {
+    result[key] = key in result ? [].concat(result[key], value) : value;
+  }
+  return result;
+}
+
+document.querySelectorAll("form[data-form-type]").forEach((form) => {
+  const message = form.querySelector(".form-message");
+  const button = form.querySelector('button[type="submit"]');
+  const show = (text, kind) => {
+    message.className = "form-message " + kind;
+    message.textContent = text; // textContent keeps the message safe from HTML injection
+  };
+
+  form.addEventListener("submit", async (event) => {
     event.preventDefault(); // stop the page from reloading
+    const data = formToObject(form);
 
-    const name = form.elements.name.value.trim();
-    const phone = form.elements.phone.value.trim();
-    const type = form.elements.type.value;
+    const missing = [...form.querySelectorAll("[required]")].some((field) =>
+      field.type === "checkbox" ? !field.checked : !field.value.trim()
+    );
+    if (missing) return show("Please fill in the required fields and tick the box to agree.", "error");
 
-    // Accepts numbers like 0712345678 or +254712345678
-    const phoneOk = /^(\+?254|0)\d{9}$/.test(phone.replace(/\s/g, ""));
-
-    message.className = "form-message";
-
-    if (name === "" || type === "") {
-      message.textContent = "Enter your name and choose an insurance type.";
-      message.classList.add("error");
-    } else if (!phoneOk) {
-      message.textContent = "Enter a valid phone number, for example 0712 345 678.";
-      message.classList.add("error");
-    } else {
-      console.log("Quote request:", { name, phone, type });
-      message.textContent = "Thank you. We will call you shortly.";
-      message.classList.add("ok");
-      form.reset();
+    if (!/^(\+?254|0)\d{9}$/.test((data.phone || "").replace(/\s/g, ""))) {
+      return show("Enter a valid phone number, for example 0712 345 678.", "error");
     }
-  });
-}
+    if (form.elements.start && form.elements.end && form.elements.end.value < form.elements.start.value) {
+      return show("The return date cannot be before the departure date.", "error");
+    }
 
-// 3. Travel quote form: check the trip details before "sending".
-// The data is only logged for now. The backend will receive it later.
-const travelForm = document.querySelector("#travel-form");
-const travelMessage = document.querySelector("#travel-message");
+    const website = data.website || ""; // hidden spam trap, real visitors leave it empty
+    delete data.website;
+    delete data.consent;
 
-if (travelForm) {
-  travelForm.addEventListener("submit", (event) => {
-    event.preventDefault();
-    const f = travelForm.elements;
-    const phoneOk = /^(\+?254|0)\d{9}$/.test(f.phone.value.replace(/\s/g, ""));
-    const datesOk = f.start.value && f.end.value && f.end.value >= f.start.value;
-    const addons = [...travelForm.querySelectorAll('input[name="addon"]:checked')].map((a) => a.value);
-
-    travelMessage.className = "form-message";
-
-    if (!f.name.value.trim() || !f.destination.value.trim() || f.age.value === "") {
-      travelMessage.textContent = "Fill in your name, destination and age.";
-      travelMessage.classList.add("error");
-    } else if (!datesOk) {
-      travelMessage.textContent = "Choose a departure date, and a return date that is not before it.";
-      travelMessage.classList.add("error");
-    } else if (!phoneOk) {
-      travelMessage.textContent = "Enter a valid phone number, for example 0712 345 678.";
-      travelMessage.classList.add("error");
-    } else {
-      console.log("Travel quote request:", {
-        direction: travelForm.querySelector('input[name="direction"]:checked').value,
-        destination: f.destination.value.trim(),
-        start: f.start.value, end: f.end.value,
-        age: f.age.value, travellers: f.count.value,
-        addons, name: f.name.value.trim(), phone: f.phone.value.trim(),
+    button.disabled = true;
+    show("Sending...", "");
+    try {
+      const response = await fetch(API_URL + "/api/quote/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ formType: form.dataset.formType, consent: true, website, fields: data }),
       });
-      travelMessage.textContent = "Thank you. We will call you with your travel quote.";
-      travelMessage.classList.add("ok");
-      travelForm.reset();
-    }
-  });
-}
-
-// 4. Quote forms on the Motor, Medical and Home pages (all share the "lead-form" class)
-document.querySelectorAll(".lead-form").forEach((leadForm) => {
-  const msg = leadForm.querySelector(".form-message");
-
-  leadForm.addEventListener("submit", (event) => {
-    event.preventDefault();
-    const data = Object.fromEntries(new FormData(leadForm).entries());
-    const phoneOk = /^(\+?254|0)\d{9}$/.test((data.phone || "").replace(/\s/g, ""));
-    const missing = [...leadForm.querySelectorAll("[required]")].some((f) => !f.value.trim());
-
-    msg.className = "form-message";
-    if (missing) {
-      msg.textContent = "Please fill in all the required fields.";
-      msg.classList.add("error");
-    } else if (!phoneOk) {
-      msg.textContent = "Enter a valid phone number, for example 0712 345 678.";
-      msg.classList.add("error");
-    } else {
-      console.log("Quote request:", data); // the backend will receive this later
-      msg.textContent = "Thank you. We will call you with your quote.";
-      msg.classList.add("ok");
-      leadForm.reset();
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || !result.ok) throw new Error(result.message || "Something went wrong. Please try again.");
+      show("Thank you. We will contact you shortly. Your reference is " + result.reference + ".", "ok");
+      form.reset();
+    } catch (error) {
+      const offline = error instanceof TypeError; // the browser could not reach the API at all
+      show(offline ? "We could not reach the server. Please try again, or call us on 0794 794 410." : error.message, "error");
+    } finally {
+      button.disabled = false;
     }
   });
 });

@@ -267,3 +267,13 @@ details p { margin-top: 10px; }
 }
 
 .person .tagline { font-size: .9rem; margin-top: 6px; color: #3d4c5e; }
+
+/* 18. Form extras: consent checkbox and the hidden spam trap */
+.quote-form label.consent, .module-form label.consent { display: flex; align-items: flex-start; gap: 10px; font-weight: 400; font-size: .92rem; }
+.consent input { margin-top: 4px; }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+button[disabled] { opacity: .6; cursor: wait; }
+/* Email inputs match the other fields */
+.module-form input[type="email"], .quote-form input[type="email"] {
+  padding: 12px; border: 1px solid #b9c5d3; border-radius: 6px; font: inherit; background: #fff; width: 100%;
+}

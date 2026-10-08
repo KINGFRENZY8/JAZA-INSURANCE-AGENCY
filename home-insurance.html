@@ -98,7 +98,7 @@
       <section class="product" id="quote-home-form">
         <h2>Request a home quote</h2>
         <p>Tell us about your property and we will call you with a quote.</p>
-        <form class="module-form lead-form" id="home-form" novalidate>
+        <form class="module-form lead-form" id="home-form" data-form-type="home" novalidate>
           <fieldset>
             <legend>I am the</legend>
             <label><input type="radio" name="role" value="Owner" checked> Owner</label>
@@ -143,6 +143,9 @@
           </fieldset>
           <label>Full name <input type="text" name="name" autocomplete="name" required></label>
           <label>Phone number <input type="tel" name="phone" autocomplete="tel" required></label>
+          <label>Email (optional) <input type="email" name="email" autocomplete="email"></label>
+                    <div class="hp" aria-hidden="true"><label>Leave this empty <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+          <label class="consent"><input type="checkbox" name="consent" required> I agree that Jaza Insurance Agency may use my details to contact me about this request.</label>
           <button class="btn btn-primary" type="submit">Request quote</button>
           <p class="form-message" role="status"></p>
         </form>

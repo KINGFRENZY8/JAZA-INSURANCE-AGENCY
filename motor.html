@@ -127,7 +127,7 @@
       <section class="product" id="quote-motor-form">
         <h2>Request a motor quote</h2>
         <p>Tell us what you need and we will call you with a quote.</p>
-        <form class="module-form lead-form" id="motor-form" novalidate>
+        <form class="module-form lead-form" id="motor-form" data-form-type="motor" novalidate>
           <label>Cover type
             <select name="cover" required>
               <option value="">Choose one</option>
@@ -141,6 +141,9 @@
           <label>Estimated vehicle value in KES (for comprehensive cover) <input type="number" name="value" min="0"></label>
           <label>Full name <input type="text" name="name" autocomplete="name" required></label>
           <label>Phone number <input type="tel" name="phone" autocomplete="tel" required></label>
+          <label>Email (optional) <input type="email" name="email" autocomplete="email"></label>
+                    <div class="hp" aria-hidden="true"><label>Leave this empty <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+          <label class="consent"><input type="checkbox" name="consent" required> I agree that Jaza Insurance Agency may use my details to contact me about this request.</label>
           <button class="btn btn-primary" type="submit">Request quote</button>
           <p class="form-message" role="status"></p>
         </form>

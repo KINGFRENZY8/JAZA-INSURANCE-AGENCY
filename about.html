@@ -133,11 +133,14 @@
     <section class="section section-alt" id="start">
       <h2 class="reveal">Ready to build your own insurance business?</h2>
       <p class="reveal">Kenya's families and small businesses need someone they can trust to explain insurance. You could be that person. Share your details and we will call you to talk about how to get started, with no pressure.</p>
-      <form class="module-form lead-form reveal" id="partner-form" novalidate>
+      <form class="module-form lead-form reveal" id="partner-form" data-form-type="agent" novalidate>
         <label>Your full name <input type="text" name="name" autocomplete="name" required></label>
         <label>Your phone number <input type="tel" name="phone" autocomplete="tel" required></label>
+          <label>Email (optional) <input type="email" name="email" autocomplete="email"></label>
         <label>Tell us about yourself <input type="text" name="about" placeholder="Your town, your background, why insurance"></label>
-        <button class="btn btn-primary" type="submit">Yes, I want to get started</button>
+                  <div class="hp" aria-hidden="true"><label>Leave this empty <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+          <label class="consent"><input type="checkbox" name="consent" required> I agree that Jaza Insurance Agency may use my details to contact me about this request.</label>
+          <button class="btn btn-primary" type="submit">Yes, I want to get started</button>
         <p class="form-message" role="status"></p>
       </form>
     </section>

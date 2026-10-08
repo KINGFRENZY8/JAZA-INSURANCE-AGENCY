@@ -1,0 +1,19 @@
+# Secrets: never commit these
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Dependencies and build output
+node_modules/
+dist/
+build/
+.netlify/
+
+# Logs and system files
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
+.vscode/
