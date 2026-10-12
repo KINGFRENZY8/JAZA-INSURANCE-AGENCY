@@ -15,6 +15,7 @@ const cors = require("cors");
 const rateLimit = require("express-rate-limit");
 const nodemailer = require("nodemailer");
 const validator = require("validator");
+const { Pool } = require("pg");
 
 // ---------------------------------------------------------------------
 // 1. Check the settings. If something is missing, stop right away.
@@ -29,6 +30,19 @@ if (!validator.isEmail(process.env.RECIPIENT_EMAIL.trim())) {
   console.error("RECIPIENT_EMAIL is not a valid email address.");
   process.exit(1);
 }
+//ADD DATABASE CONFIGURATION HERE
+if (!process.env.DATABASE_URL) {
+console.error("Missing DATABASE_URL in .env");
+process.exit(1);
+}
+
+const db = new Pool({
+connectionString: process.env.DATABASE_URL,
+ssl: { rejectUnauthorized: false },
+max: 5,
+connectionTimeoutMillis: 10000,
+});
+
 
 const isProd = process.env.NODE_ENV === "production";
 const PORT = Number(process.env.PORT) || 3000;
@@ -177,6 +191,23 @@ app.post("/api/quote/submit", submitLimiter, async (req, res, next) => {
 
     const reference = "JIA-" + Date.now().toString(36).toUpperCase() + "-" + crypto.randomBytes(2).toString("hex").toUpperCase();
     const received = new Date().toLocaleString("en-KE", { timeZone: "Africa/Nairobi" });
+    
+    // Save the quote request to Supabase
+    await db.query(
+      `INSERT INTO quote_requests
+        (reference, form_type, name, phone, email, form_data, consent)
+       VALUES ($1, $2, $3, $4, $5, $6::jsonb, $7)`,
+      [
+        reference,
+        body.formType,
+        name,
+        phone,
+        email || null,
+        JSON.stringify(data),
+        body.consent,
+      ]
+    );
+    
 
     const html =
       `<h2 style="color:#0b2a4a">${esc(spec.label)}</h2>` +
