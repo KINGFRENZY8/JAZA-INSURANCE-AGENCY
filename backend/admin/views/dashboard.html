@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#0B3B82">
+  <title>Dashboard | Jaza Insurance Agency</title>
+  <link rel="icon" href="/staff/logo.png" type="image/png">
+  <link rel="stylesheet" href="/staff/admin.css">
+</head>
+<body class="app-page">
+  <svg class="sprite" aria-hidden="true" focusable="false">
+    <defs>
+      <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+      <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></symbol>
+      <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></symbol>
+      <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></symbol>
+      <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+      <symbol id="i-settings" viewBox="0 0 24 24"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></symbol>
+      <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></symbol>
+      <symbol id="i-menu" viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></symbol>
+      <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+      <symbol id="i-phone" viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></symbol>
+      <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 2 10 5-10 5L2 7zM2 17l10 5 10-5M2 12l10 5 10-5"/></symbol>
+      <symbol id="i-inbox" viewBox="0 0 24 24"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.5 5.1 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.5-6.9A2 2 0 0 0 16.7 4H7.3a2 2 0 0 0-1.8 1.1z"/></symbol>
+      <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+      <symbol id="i-message" viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.8 7L3 21l2-5.5A8 8 0 1 1 21 12z"/></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></symbol>
+      <symbol id="i-xcircle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6M15 9l-6 6"/></symbol>
+      <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m0 0-4-4m4 4 4-4M4 21h16"/></symbol>
+    </defs>
+  </svg>
+
+  <div class="app" id="app">
+    <aside class="sidebar" id="sidebar" aria-label="Main navigation">
+      <a class="sidebar-brand" href="/staff/dashboard">
+        <img src="/staff/logo.png" alt="" width="52" height="33">
+        <span>Jaza Insurance Agency</span>
+      </a>
+
+      <div class="menu-search">
+        <label class="sr-only" for="menu-search">Search menu</label>
+        <svg class="icon" aria-hidden="true"><use href="#i-search"/></svg>
+        <input type="search" id="menu-search" placeholder="Search menu" autocomplete="off">
+      </div>
+
+      <nav class="nav" id="nav" aria-label="Staff portal sections">
+        <button type="button" class="nav-item" data-section="dashboard"><svg class="icon" aria-hidden="true"><use href="#i-grid"/></svg><span>Dashboard</span></button>
+        <button type="button" class="nav-item" data-section="quotes"><svg class="icon" aria-hidden="true"><use href="#i-file"/></svg><span>Quote Requests</span></button>
+        <button type="button" class="nav-item" data-section="reports"><svg class="icon" aria-hidden="true"><use href="#i-chart"/></svg><span>Reports</span></button>
+        <button type="button" class="nav-item" data-section="profile"><svg class="icon" aria-hidden="true"><use href="#i-user"/></svg><span>My Profile</span></button>
+        <button type="button" class="nav-item" data-section="settings"><svg class="icon" aria-hidden="true"><use href="#i-settings"/></svg><span>Settings</span></button>
+        <p class="nav-empty" id="nav-empty" hidden>No menu items match.</p>
+      </nav>
+
+      <div class="account">
+        <span class="avatar" id="acct-initials" aria-hidden="true"></span>
+        <div class="account-text">
+          <strong id="acct-name"></strong>
+          <small id="acct-email"></small>
+        </div>
+        <button type="button" id="logout" class="icon-btn" aria-label="Sign out" title="Sign out"><svg class="icon" aria-hidden="true"><use href="#i-logout"/></svg></button>
+      </div>
+    </aside>
+    <div class="scrim" id="scrim" hidden></div>
+
+    <div class="main">
+      <header class="topbar">
+        <button type="button" class="icon-btn menu-btn" id="menu-btn" aria-label="Open menu" aria-controls="sidebar" aria-expanded="false"><svg class="icon" aria-hidden="true"><use href="#i-menu"/></svg></button>
+        <div class="topbar-right">
+          <div class="user-chip">
+            <span class="avatar small" id="top-initials" aria-hidden="true"></span>
+            <span class="user-chip-text"><strong id="top-name"></strong><small id="top-role"></small></span>
+          </div>
+          <a class="btn outline" href="tel:+254794794410"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg><span>Contact Support</span></a>
+        </div>
+      </header>
+
+      <main class="content" id="content" tabindex="-1">
+        <section id="section-dashboard" class="page" aria-labelledby="h-dashboard" hidden>
+          <div class="page-head">
+            <h1 id="h-dashboard">Dashboard</h1>
+            <p>Welcome back. Here is an overview of your quote requests.</p>
+          </div>
+          <div class="kpi-grid" id="kpi-grid">
+            <article class="kpi"><span class="kpi-icon"><svg class="icon" aria-hidden="true"><use href="#i-layers"/></svg></span><div><span class="kpi-label">Total Quotes</span><strong class="kpi-value" id="stat-total">—</strong></div></article>
+            <article class="kpi"><span class="kpi-icon"><svg class="icon" aria-hidden="true"><use href="#i-inbox"/></svg></span><div><span class="kpi-label">New Requests</span><strong class="kpi-value" id="stat-new">—</strong></div></article>
+            <article class="kpi"><span class="kpi-icon"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg></span><div><span class="kpi-label">In Progress</span><strong class="kpi-value" id="stat-progress">—</strong></div></article>
+            <article class="kpi"><span class="kpi-icon"><svg class="icon" aria-hidden="true"><use href="#i-message"/></svg></span><div><span class="kpi-label">Awaiting Client</span><strong class="kpi-value" id="stat-awaiting">—</strong></div></article>
+            <article class="kpi"><span class="kpi-icon"><svg class="icon" aria-hidden="true"><use href="#i-file"/></svg></span><div><span class="kpi-label">Quoted</span><strong class="kpi-value" id="stat-quoted">—</strong></div></article>
+            <article class="kpi"><span class="kpi-icon"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span><div><span class="kpi-label">Converted</span><strong class="kpi-value" id="stat-converted">—</strong></div></article>
+            <article class="kpi"><span class="kpi-icon"><svg class="icon" aria-hidden="true"><use href="#i-xcircle"/></svg></span><div><span class="kpi-label">Closed</span><strong class="kpi-value" id="stat-closed">—</strong></div></article>
+          </div>
+          <p class="msg" id="dashboard-msg" role="status" aria-live="polite"></p>
+        </section>
+
+        <section id="section-quotes" class="page" aria-labelledby="h-quotes" hidden>
+          <div class="page-head">
+            <h1 id="h-quotes">Quote Requests</h1>
+            <p>Review client enquiries and keep every request moving.</p>
+          </div>
+          <form class="card filters" id="filters" role="search">
+            <div class="field">
+              <label for="f-status">Status</label>
+              <select id="f-status"><option value="">All statuses</option></select>
+            </div>
+            <div class="field grow">
+              <label for="f-q">Search</label>
+              <input type="search" id="f-q" placeholder="Reference, name or phone" autocomplete="off">
+            </div>
+            <button class="btn primary" id="f-go" type="submit">Search</button>
+          </form>
+          <div class="split" id="split">
+            <div class="card list">
+              <div class="table-scroll">
+                <table>
+                  <thead><tr><th scope="col">Reference</th><th scope="col">Name</th><th scope="col">Type</th><th scope="col">Status</th><th scope="col">Assigned</th><th scope="col">Received</th></tr></thead>
+                  <tbody id="rows"></tbody>
+                </table>
+              </div>
+              <p class="msg pad" id="list-msg" role="status" aria-live="polite"></p>
+              <div class="pager">
+                <button class="btn outline small" id="prev" type="button">Previous</button>
+                <span id="page-info" aria-live="polite"></span>
+                <button class="btn outline small" id="next" type="button">Next</button>
+              </div>
+            </div>
+            <aside class="card detail" id="detail" aria-labelledby="d-ref" hidden>
+              <div class="detail-head">
+                <div><span class="eyebrow">Request details</span><h2 id="d-ref"></h2></div>
+                <button type="button" class="icon-btn" id="d-close" aria-label="Close details"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button>
+              </div>
+              <dl class="fields" id="d-fields"></dl>
+              <div class="field">
+                <label for="d-status">Status</label>
+                <select id="d-status"></select>
+              </div>
+              <div class="field" id="d-assign-wrap" hidden>
+                <label for="d-assign">Assigned to</label>
+                <select id="d-assign"></select>
+              </div>
+              <button class="btn primary block" id="d-save" type="button">Save changes</button>
+              <p class="msg" id="d-msg" role="status" aria-live="polite"></p>
+            </aside>
+          </div>
+        </section>
+
+        <section id="section-reports" class="page" aria-labelledby="h-reports" hidden>
+          <div class="page-head">
+            <h1 id="h-reports">Reports</h1>
+            <p>Export your quote data for the period you choose.</p>
+          </div>
+          <div class="card-grid">
+            <article class="card report-card">
+              <span class="kpi-icon"><svg class="icon" aria-hidden="true"><use href="#i-download"/></svg></span>
+              <h2>Quote requests export</h2>
+              <p class="subtle">A CSV file of the requests received between two dates, including client details and submitted form data. It contains only the requests you are permitted to view.</p>
+              <form id="report-form" novalidate>
+                <div class="field-row">
+                  <div class="field">
+                    <label for="report-from">From</label>
+                    <input id="report-from" type="date" required>
+                  </div>
+                  <div class="field">
+                    <label for="report-to">To</label>
+                    <input id="report-to" type="date" required>
+                  </div>
+                </div>
+                <button class="btn primary" id="report-download" type="submit">Download CSV</button>
+                <p class="msg" id="report-msg" role="status" aria-live="polite"></p>
+              </form>
+            </article>
+          </div>
+        </section>
+
+        <section id="section-profile" class="page" aria-labelledby="h-profile" hidden>
+          <div class="page-head">
+            <h1 id="h-profile">My Profile</h1>
+            <p>Your staff account information.</p>
+          </div>
+          <div class="card pad-lg narrow">
+            <dl class="fields" id="profile-fields"></dl>
+            <p class="msg" id="profile-msg" role="status" aria-live="polite"></p>
+          </div>
+        </section>
+
+        <section id="section-settings" class="page" aria-labelledby="h-settings" hidden>
+          <div class="page-head">
+            <h1 id="h-settings">Settings</h1>
+            <p>Manage the security of your account.</p>
+          </div>
+          <div class="card pad-lg narrow">
+            <h2>Change password</h2>
+            <form id="settings-password-form" novalidate>
+              <div class="field">
+                <label for="settings-current">Current password</label>
+                <input type="password" id="settings-current" autocomplete="current-password" required>
+              </div>
+              <div class="field">
+                <label for="settings-new">New password</label>
+                <input type="password" id="settings-new" autocomplete="new-password" minlength="12" maxlength="64" required aria-describedby="settings-hint">
+                <small id="settings-hint" class="hint">12 to 64 characters.</small>
+              </div>
+              <div class="field">
+                <label for="settings-confirm">Confirm new password</label>
+                <input type="password" id="settings-confirm" autocomplete="new-password" minlength="12" maxlength="64" required>
+              </div>
+              <button class="btn primary" id="settings-submit" type="submit">Update password</button>
+              <p class="msg" id="settings-msg" role="status" aria-live="polite"></p>
+            </form>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+  <script src="/staff/portal.js"></script>
+  <script src="/staff/dashboard.js"></script>
+</body>
+</html>

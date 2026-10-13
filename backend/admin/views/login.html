@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#0B3B82">
+  <title>Staff sign in | Jaza Insurance Agency</title>
+  <link rel="icon" href="/staff/logo.png" type="image/png">
+  <link rel="stylesheet" href="/staff/admin.css">
+</head>
+<body class="auth-page">
+  <main class="auth-shell">
+    <div class="auth-brand">
+      <img src="/staff/logo.png" alt="" width="64" height="40">
+      <span>Jaza Insurance Agency</span>
+    </div>
+
+    <section id="view-login" class="auth-card" aria-labelledby="login-title" hidden>
+      <h1 id="login-title">Staff sign in</h1>
+      <p class="subtle">Enter your work email and password to continue.</p>
+      <form id="login-form" novalidate>
+        <div class="field">
+          <label for="login-email">Work email</label>
+          <input type="email" id="login-email" autocomplete="username" placeholder="you@jaza.co.ke" required>
+        </div>
+        <div class="field">
+          <label for="login-password">Password</label>
+          <div class="input-action">
+            <input type="password" id="login-password" autocomplete="current-password" required>
+            <button type="button" id="toggle-password" class="text-btn" aria-label="Show password">Show</button>
+          </div>
+        </div>
+        <button class="btn primary block" id="login-submit" type="submit">Sign in</button>
+        <p class="msg" id="login-msg" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <section id="view-change" class="auth-card" aria-labelledby="change-title" hidden>
+      <h1 id="change-title">Set a new password</h1>
+      <p class="subtle">You must replace your temporary password before continuing. Use 12 to 64 characters that you do not use anywhere else.</p>
+      <form id="change-form" novalidate>
+        <div class="field">
+          <label for="pw-current">Current (temporary) password</label>
+          <input type="password" id="pw-current" autocomplete="current-password" required>
+        </div>
+        <div class="field">
+          <label for="pw-new">New password</label>
+          <input type="password" id="pw-new" autocomplete="new-password" minlength="12" maxlength="64" required>
+        </div>
+        <div class="field">
+          <label for="pw-confirm">Confirm new password</label>
+          <input type="password" id="pw-confirm" autocomplete="new-password" minlength="12" maxlength="64" required>
+        </div>
+        <button class="btn primary block" id="change-submit" type="submit">Save password</button>
+        <p class="msg" id="change-msg" role="status" aria-live="polite"></p>
+      </form>
+      <button type="button" id="change-cancel" class="text-btn center">Sign out instead</button>
+    </section>
+
+    <p class="auth-foot">Private staff portal. For authorised personnel only.</p>
+  </main>
+  <script src="/staff/portal.js"></script>
+  <script src="/staff/login.js"></script>
+</body>
+</html>
