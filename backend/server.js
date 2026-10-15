@@ -15,6 +15,7 @@ const cors = require("cors");
 const rateLimit = require("express-rate-limit");
 const nodemailer = require("nodemailer");
 const validator = require("validator");
+const { mountAdmin } = require("./admin/index");
 
 // ---------------------------------------------------------------------
 // 1. Check the settings. If something is missing, stop right away.
@@ -31,6 +32,16 @@ if (!validator.isEmail(process.env.RECIPIENT_EMAIL.trim())) {
 }
 
 const isProd = process.env.NODE_ENV === "production";
+//ADD DATABASE CONFIGURATION HERE
+if (!process.env.DATABASE_URL) {
+console.error("Missing DATABASE_URL in .env");
+process.exit(1);
+}
+
+const db = require("./db");
+
+
+
 const PORT = Number(process.env.PORT) || 3000;
 const RECIPIENT = process.env.RECIPIENT_EMAIL.trim();
 const SENDER = (process.env.EMAIL_FROM || process.env.EMAIL_USER).trim();
@@ -100,6 +111,9 @@ app.use((req, res, next) => {
   next();
 });
 
+// Staff portal (login and quote inbox). Mounted BEFORE the public API's strict headers.
+mountAdmin(app, db, isProd);
+
 // Security headers
 app.use(
   helmet({
@@ -128,7 +142,7 @@ app.use(
   })
 );
 
-app.use(express.json({ limit: "20kb" })); // reject big requests
+app.use(express.json({ limit: "20kb" }));
 
 // At most 5 submissions per visitor per 15 minutes (stops spam and email bombing)
 const submitLimiter = rateLimit({
@@ -177,6 +191,23 @@ app.post("/api/quote/submit", submitLimiter, async (req, res, next) => {
 
     const reference = "JIA-" + Date.now().toString(36).toUpperCase() + "-" + crypto.randomBytes(2).toString("hex").toUpperCase();
     const received = new Date().toLocaleString("en-KE", { timeZone: "Africa/Nairobi" });
+    
+    // Save the quote request to Supabase
+    await db.query(
+      `INSERT INTO quote_requests
+        (reference, form_type, name, phone, email, form_data, consent)
+       VALUES ($1, $2, $3, $4, $5, $6::jsonb, $7)`,
+      [
+        reference,
+        body.formType,
+        name,
+        phone,
+        email || null,
+        JSON.stringify(data),
+        body.consent,
+      ]
+    );
+    
 
     const html =
       `<h2 style="color:#0b2a4a">${esc(spec.label)}</h2>` +
