@@ -29,6 +29,17 @@
       <symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></symbol>
       <symbol id="i-xcircle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6M15 9l-6 6"/></symbol>
       <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m0 0-4-4m4 4 4-4M4 21h16"/></symbol>
+      <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+      <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+      <symbol id="i-edit" viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></symbol>
+      <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+      <symbol id="i-send" viewBox="0 0 24 24"><path d="m22 2-11 11M22 2l-7 20-4-9-9-4z"/></symbol>
+      <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></symbol>
+      <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.9 1.9 0 0 0 3.4 0"/></symbol>
+      <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 1-15.5 6.2M3 12A9 9 0 0 1 18.5 5.8M18 2v4h-4M6 22v-4h4"/></symbol>
+      <symbol id="i-pulse" viewBox="0 0 24 24"><path d="M3 12h4l3-8 4 16 3-8h4"/></symbol>
+      <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol>
+      <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
     </defs>
   </svg>
 
@@ -68,12 +79,17 @@
     <div class="main">
       <header class="topbar">
         <button type="button" class="icon-btn menu-btn" id="menu-btn" aria-label="Open menu" aria-controls="sidebar" aria-expanded="false"><svg class="icon" aria-hidden="true"><use href="#i-menu"/></svg></button>
+        <form class="top-search" id="top-search" role="search">
+          <label class="sr-only" for="top-q">Search quote requests</label>
+          <svg class="icon" aria-hidden="true"><use href="#i-search"/></svg>
+          <input type="search" id="top-q" placeholder="Search quotes by reference, name or phone" autocomplete="off" maxlength="60">
+        </form>
         <div class="topbar-right">
           <div class="user-chip">
             <span class="avatar small" id="top-initials" aria-hidden="true"></span>
             <span class="user-chip-text"><strong id="top-name"></strong><small id="top-role"></small></span>
           </div>
-          <a class="btn outline" href="tel:+254794794410"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg><span>Contact Support</span></a>
+          <a class="btn outline contact" href="tel:+254794794410" aria-label="Contact Support"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg><span>Contact Support</span></a>
         </div>
       </header>
 
@@ -82,6 +98,34 @@
           <div class="page-head">
             <h1 id="h-dashboard">Dashboard</h1>
             <p>Welcome back. Here is an overview of your quote requests.</p>
+          </div>
+          <div class="card toolbar" role="group" aria-label="Dashboard filters">
+            <div class="field">
+              <label for="g-range">Date range</label>
+              <select id="g-range">
+                <option value="all">All time</option>
+                <option value="today">Today</option>
+                <option value="week">This week</option>
+                <option value="month">This month</option>
+                <option value="custom">Custom range</option>
+              </select>
+            </div>
+            <div class="field-row custom-range" id="g-custom" hidden>
+              <div class="field"><label for="g-from">From</label><input type="date" id="g-from"></div>
+              <div class="field"><label for="g-to">To</label><input type="date" id="g-to"></div>
+            </div>
+            <div class="field">
+              <label for="g-cat">Policy category</label>
+              <select id="g-cat">
+                <option value="">All policies</option>
+                <option value="motor">Motor</option>
+                <option value="medical">Health</option>
+                <option value="home">Home</option>
+                <option value="commercial">Commercial</option>
+                <option value="travel">Travel</option>
+              </select>
+            </div>
+            <button type="button" class="btn primary toolbar-cta" id="new-quote"><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg><span>Create New Quote Request</span></button>
           </div>
           <div class="kpi-grid" id="kpi-grid">
             <article class="kpi"><span class="kpi-icon"><svg class="icon" aria-hidden="true"><use href="#i-layers"/></svg></span><div><span class="kpi-label">Total Quotes</span><strong class="kpi-value" id="stat-total">—</strong></div></article>
@@ -93,6 +137,62 @@
             <article class="kpi"><span class="kpi-icon"><svg class="icon" aria-hidden="true"><use href="#i-xcircle"/></svg></span><div><span class="kpi-label">Closed</span><strong class="kpi-value" id="stat-closed">—</strong></div></article>
           </div>
           <p class="msg" id="dashboard-msg" role="status" aria-live="polite"></p>
+
+          <div class="viz-grid">
+            <section class="card panel" aria-labelledby="h-trend">
+              <div class="panel-head">
+                <div><h2 id="h-trend">Quote conversion &amp; trends</h2><p class="subtle small-text" id="trend-sub">Requests received vs. converted</p></div>
+                <ul class="legend" aria-hidden="true"><li><i class="sw sw-received"></i>Received</li><li><i class="sw sw-converted"></i>Converted</li></ul>
+              </div>
+              <div class="chart-wrap" id="trend-chart"></div>
+              <p class="msg pad" id="trend-msg" role="status"></p>
+            </section>
+            <section class="card panel" aria-labelledby="h-dist">
+              <div class="panel-head"><div><h2 id="h-dist">Quotes by category</h2><p class="subtle small-text">Share of requests in the selected period</p></div></div>
+              <div class="donut-wrap" id="donut"></div>
+              <p class="msg pad" id="dist-msg" role="status"></p>
+            </section>
+          </div>
+
+          <section class="card panel table-panel" aria-labelledby="h-recent">
+            <div class="panel-head">
+              <h2 id="h-recent">Recent quote requests</h2>
+              <button type="button" class="btn outline small" id="view-all">View all <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+            </div>
+            <div class="table-scroll">
+              <table class="recent-table">
+                <caption class="sr-only">Most recent quote requests with quick actions</caption>
+                <thead><tr>
+                  <th scope="col">Request ID</th><th scope="col">Client</th><th scope="col">Insurance type</th><th scope="col">Submitted</th>
+                  <th scope="col" class="num">Premium / value est.</th><th scope="col">Status</th><th scope="col" class="actions-col">Actions</th>
+                </tr></thead>
+                <tbody id="recent-rows"></tbody>
+              </table>
+            </div>
+            <p class="msg pad" id="recent-msg" role="status"></p>
+          </section>
+
+          <div class="ops-grid">
+            <section class="card panel" aria-labelledby="h-quick">
+              <div class="panel-head"><h2 id="h-quick">Quick actions</h2></div>
+              <div class="quick-grid">
+                <button type="button" class="quick" data-quick="quote"><span class="quick-ico"><svg class="icon" aria-hidden="true"><use href="#i-send"/></svg></span><span><strong>Send quick quote</strong><small>Email a quote to a client</small></span></button>
+                <button type="button" class="quick" data-quick="followup"><span class="quick-ico"><svg class="icon" aria-hidden="true"><use href="#i-message"/></svg></span><span><strong>Follow up awaiting clients</strong><small>Open the awaiting list</small></span></button>
+                <button type="button" class="quick" data-quick="pdf"><span class="quick-ico"><svg class="icon" aria-hidden="true"><use href="#i-download"/></svg></span><span><strong>Export monthly PDF report</strong><small>This month, print or save</small></span></button>
+                <button type="button" class="quick" data-quick="remind"><span class="quick-ico"><svg class="icon" aria-hidden="true"><use href="#i-bell"/></svg></span><span><strong>Batch email reminders</strong><small>Remind several clients at once</small></span></button>
+              </div>
+            </section>
+            <section class="card panel" aria-labelledby="h-tasks">
+              <div class="panel-head"><h2 id="h-tasks">Upcoming tasks &amp; follow-ups</h2><span class="count-chip" id="tasks-count" hidden></span></div>
+              <ul class="feed" id="tasks"></ul>
+              <p class="msg pad" id="tasks-msg" role="status"></p>
+            </section>
+            <section class="card panel" aria-labelledby="h-activity">
+              <div class="panel-head"><h2 id="h-activity">Recent activity</h2><button type="button" class="icon-btn" id="activity-refresh" aria-label="Refresh activity" title="Refresh"><svg class="icon" aria-hidden="true"><use href="#i-refresh"/></svg></button></div>
+              <ul class="feed" id="activity"></ul>
+              <p class="msg pad" id="activity-msg" role="status"></p>
+            </section>
+          </div>
         </section>
 
         <section id="section-quotes" class="page" aria-labelledby="h-quotes" hidden>
@@ -214,7 +314,82 @@
       </main>
     </div>
   </div>
+
+  <div class="menu" id="status-menu" role="menu" aria-label="Update status" hidden></div>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <dialog class="dlg drawer" id="dlg-view" aria-labelledby="v-ref">
+    <div class="dlg-head"><div><span class="eyebrow">Quick view</span><h2 id="v-ref"></h2></div><button type="button" class="icon-btn" data-close aria-label="Close"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button></div>
+    <div class="dlg-body"><div id="v-status"></div><dl class="fields" id="v-fields"></dl><p class="msg" id="v-msg" role="status"></p></div>
+    <div class="dlg-foot"><button type="button" class="btn outline" id="v-open">Open in Quote Requests</button></div>
+  </dialog>
+
+  <dialog class="dlg" id="dlg-assign" aria-labelledby="a-title">
+    <form id="assign-form" method="dialog" novalidate>
+      <div class="dlg-head"><div><span class="eyebrow" id="a-ref"></span><h2 id="a-title">Assign staff</h2></div><button type="button" class="icon-btn" data-close aria-label="Close"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button></div>
+      <div class="dlg-body">
+        <div class="field"><label for="a-staff">Assigned to</label><select id="a-staff"></select><small class="hint">A new request that gets an owner moves to In progress.</small></div>
+        <p class="msg" id="a-msg" role="status"></p>
+      </div>
+      <div class="dlg-foot"><button type="button" class="btn outline" data-close>Cancel</button><button type="submit" class="btn primary" id="a-save">Save</button></div>
+    </form>
+  </dialog>
+
+  <dialog class="dlg" id="dlg-new" aria-labelledby="n-title">
+    <form id="new-form" novalidate>
+      <div class="dlg-head"><div><span class="eyebrow">New request</span><h2 id="n-title">Create quote request</h2></div><button type="button" class="icon-btn" data-close aria-label="Close"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button></div>
+      <div class="dlg-body">
+        <div class="field"><label for="n-type">Insurance type</label>
+          <select id="n-type" required><option value="motor">Motor</option><option value="medical">Health</option><option value="home">Home</option><option value="travel">Travel</option><option value="general">Other</option></select></div>
+        <div class="field-row">
+          <div class="field"><label for="n-name">Client name</label><input type="text" id="n-name" maxlength="100" autocomplete="off" required></div>
+          <div class="field"><label for="n-phone">Phone</label><input type="text" id="n-phone" inputmode="tel" placeholder="0712 345 678" maxlength="20" autocomplete="off" required></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label for="n-email">Email (optional)</label><input type="email" id="n-email" maxlength="120" autocomplete="off"></div>
+          <div class="field"><label for="n-value">Value to insure, KES (optional)</label><input type="text" id="n-value" inputmode="numeric" maxlength="14" autocomplete="off"></div>
+        </div>
+        <div class="field"><label for="n-note">Notes (optional)</label><textarea id="n-note" rows="3" maxlength="300"></textarea></div>
+        <p class="msg" id="n-msg" role="status"></p>
+      </div>
+      <div class="dlg-foot"><button type="button" class="btn outline" data-close>Cancel</button><button type="submit" class="btn primary" id="n-save">Create request</button></div>
+    </form>
+  </dialog>
+
+  <dialog class="dlg" id="dlg-quote" aria-labelledby="q-title">
+    <form id="quote-form" novalidate>
+      <div class="dlg-head"><div><span class="eyebrow">Quick quote</span><h2 id="q-title">Send a quick quote</h2></div><button type="button" class="icon-btn" data-close aria-label="Close"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button></div>
+      <div class="dlg-body">
+        <div class="field"><label for="q-who">Client</label><select id="q-who" required></select></div>
+        <div class="field"><label for="q-amount">Quoted premium, KES</label><input type="text" id="q-amount" inputmode="numeric" maxlength="12" autocomplete="off" required></div>
+        <div class="field"><label for="q-note">Message (optional)</label><textarea id="q-note" rows="3" maxlength="400"></textarea></div>
+        <label class="check"><input type="checkbox" id="q-mark" checked> Mark the request as Quoted</label>
+        <p class="hint">This opens a draft in your email app. Nothing is sent until you press Send there.</p>
+        <p class="msg" id="q-msg" role="status"></p>
+      </div>
+      <div class="dlg-foot"><button type="button" class="btn outline" data-close>Cancel</button><button type="submit" class="btn primary">Open email draft</button></div>
+    </form>
+  </dialog>
+
+  <dialog class="dlg" id="dlg-remind" aria-labelledby="r-title">
+    <form id="remind-form" novalidate>
+      <div class="dlg-head"><div><span class="eyebrow">Batch reminders</span><h2 id="r-title">Email reminders</h2></div><button type="button" class="icon-btn" data-close aria-label="Close"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button></div>
+      <div class="dlg-body">
+        <fieldset class="pick"><legend>Clients awaiting a reply</legend>
+          <label class="check all"><input type="checkbox" id="r-all" checked> Select all</label>
+          <div id="r-list" class="pick-list"></div>
+        </fieldset>
+        <div class="field"><label for="r-msg">Message</label><textarea id="r-msg" rows="4" maxlength="600"></textarea></div>
+        <p class="hint">Recipients are added as BCC, so clients cannot see each other's addresses. Nothing is sent until you press Send in your email app.</p>
+        <p class="msg" id="r-note" role="status"></p>
+      </div>
+      <div class="dlg-foot"><button type="button" class="btn outline" data-close>Cancel</button><button type="submit" class="btn primary">Open email draft</button></div>
+    </form>
+  </dialog>
+
+  <section id="print-report" class="print-report" hidden></section>
   <script src="/staff/portal.js"></script>
+  <script src="/staff/overview.js"></script>
   <script src="/staff/dashboard.js"></script>
 </body>
 </html>

@@ -9,6 +9,7 @@ const session = require("express-session");
 const PgSession = require("connect-pg-simple")(session);
 const bcrypt = require("bcryptjs");
 const validator = require("validator");
+const { registerDashboardApi } = require("./dashboard-api");
 
 const STATUSES = ["new", "in_progress", "awaiting_client", "quoted", "converted", "closed"];
 const MANAGER_ROLES = ["manager", "admin"];   // can see everything and assign work
@@ -334,6 +335,9 @@ function mountAdmin(app, db, isProd) {
       res.json({ ok: true });
     } catch (err) { next(err); }
   });
+
+  // ---- Dashboard widgets: overview, follow-ups, activity, quick-quote contacts, create request
+  registerDashboardApi(router, { db, requireStaff, isManager, audit, STATUSES });
 
   router.use((req, res) => res.status(404).json({ ok: false, message: "Not found." }));
   router.use((err, req, res, next) => {

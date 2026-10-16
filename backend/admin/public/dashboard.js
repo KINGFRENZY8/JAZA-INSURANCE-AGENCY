@@ -97,17 +97,14 @@
   });
 
   // ---------------------------------------------------------------- dashboard
-  async function loadDashboard() {
-    say("#dashboard-msg", "");
-    try {
-      const { stats } = await api("/dashboard");
-      [["#stat-total", "total"], ["#stat-new", "new"], ["#stat-progress", "in_progress"],
-       ["#stat-awaiting", "awaiting_client"], ["#stat-quoted", "quoted"], ["#stat-converted", "converted"], ["#stat-closed", "closed"]]
-        .forEach(([sel, key]) => { $(sel).textContent = Number(stats[key] || 0).toLocaleString(); });
-    } catch (e) {
-      if (handleAuthError(e)) return;
-      say("#dashboard-msg", e.message, "error");
-    }
+  // The dashboard widgets live in overview.js
+  function loadDashboard() { Overview.load(); }
+
+  // Jump to Quote Requests with a search term and/or status already applied (used by the dashboard widgets).
+  function goto(section, opts) {
+    opts = opts || {};
+    if (section === "quotes") { $("#f-q").value = opts.q || ""; $("#f-status").value = opts.status || ""; offset = 0; }
+    switchSection(section, true);
   }
 
   // ---------------------------------------------------------------- quote requests
@@ -309,6 +306,7 @@
     $("#acct-name").textContent = user.name;
     $("#acct-initials").textContent = initials(user.name);
     loadStatusFilter();
+    Overview.init({ me: () => me, isManager, goto, authError: handleAuthError });
 
     const hash = window.location.hash.replace("#", "");
     switchSection(SECTIONS.includes(hash) ? hash : "dashboard");
