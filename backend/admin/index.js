@@ -10,6 +10,10 @@ const PgSession = require("connect-pg-simple")(session);
 const bcrypt = require("bcryptjs");
 const validator = require("validator");
 const { registerDashboardApi } = require("./dashboard-api");
+const { registerQuotesApi } = require("./quotes-api");
+const { CAT_SQL, insuranceType, valueEstimate } = require("./query-helpers");
+const { registerReportsApi } = require("./reports-api");
+const { registerProfileApi } = require("./profile-api");
 
 const STATUSES = ["new", "in_progress", "awaiting_client", "quoted", "converted", "closed"];
 const MANAGER_ROLES = ["manager", "admin"];   // can see everything and assign work
@@ -256,42 +260,17 @@ function mountAdmin(app, db, isProd) {
   // ---- Quotes. Managers see all of them; staff only see quotes assigned to them.
   const canSee = (s, quote) => isManager(s) || quote.assigned_to === s.id;
 
-  router.get("/api/quotes", requireStaff, async (req, res, next) => {
-    try {
-      const s = req.session.staff;
-      const params = [];
-      const p = (v) => { params.push(v); return "$" + params.length; };
-      const where = [];
-      if (!isManager(s)) where.push("q.assigned_to = " + p(s.id));
-      const status = String(req.query.status || "");
-      if (STATUSES.includes(status)) where.push("q.status = " + p(status));
-      const search = String(req.query.q || "").trim().slice(0, 60);
-      if (search) {
-        const like = p("%" + search.replace(/[\\%_]/g, "\\$&") + "%");
-        where.push(`(q.reference ILIKE ${like} OR q.name ILIKE ${like} OR q.phone ILIKE ${like})`);
-      }
-      const limit = Math.min(Math.max(parseInt(req.query.limit, 10) || 25, 1), 50);
-      const offset = Math.max(parseInt(req.query.offset, 10) || 0, 0);
-      const sql = `SELECT q.id, q.reference, q.form_type, q.name, q.phone, q.status, q.created_at,
-                          a.full_name AS assigned_name, count(*) OVER() AS total
-                   FROM quote_requests q LEFT JOIN admin_users a ON a.id = q.assigned_to
-                   ${where.length ? "WHERE " + where.join(" AND ") : ""}
-                   ORDER BY q.created_at DESC LIMIT ${p(limit)} OFFSET ${p(offset)}`;
-      const { rows } = await db.query(sql, params);
-      res.json({ ok: true, total: rows.length ? Number(rows[0].total) : 0, quotes: rows.map(({ total, ...r }) => r) });
-    } catch (err) { next(err); }
-  });
-
   router.get("/api/quotes/:id(\\d+)", requireStaff, async (req, res, next) => {
     try {
       const s = req.session.staff;
       const { rows } = await db.query(
         `SELECT q.id, q.reference, q.form_type, q.name, q.phone, q.email, q.form_data, q.status, q.assigned_to,
-                q.created_at, q.updated_at, a.full_name AS assigned_name
+                q.created_at, q.updated_at, a.full_name AS assigned_name, ${CAT_SQL} AS category
          FROM quote_requests q LEFT JOIN admin_users a ON a.id = q.assigned_to WHERE q.id = $1`, [req.params.id]);
       if (!rows[0] || !canSee(s, rows[0])) return res.status(404).json({ ok: false, message: "Not found." });
       await audit(s.id, rows[0].id, "quote.viewed", {}, req);
-      res.json({ ok: true, quote: rows[0], statuses: STATUSES });
+      const quote = { ...rows[0], type_label: insuranceType(rows[0]), value_est: valueEstimate(rows[0]) };
+      res.json({ ok: true, quote, statuses: STATUSES });
     } catch (err) { next(err); }
   });
 
@@ -338,6 +317,10 @@ function mountAdmin(app, db, isProd) {
 
   // ---- Dashboard widgets: overview, follow-ups, activity, quick-quote contacts, create request
   registerDashboardApi(router, { db, requireStaff, isManager, audit, STATUSES });
+  // ---- Quote Requests, Reports and My Profile pages
+  registerQuotesApi(router, { db, requireStaff, requireManager, isManager, audit, STATUSES });
+  registerReportsApi(router, { db, requireStaff, isManager });
+  registerProfileApi(router, { db, requireStaff, audit });
 
   router.use((req, res) => res.status(404).json({ ok: false, message: "Not found." }));
   router.use((err, req, res, next) => {

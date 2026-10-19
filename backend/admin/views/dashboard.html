@@ -7,7 +7,9 @@
   <meta name="theme-color" content="#0B3B82">
   <title>Dashboard | Jaza Insurance Agency</title>
   <link rel="icon" href="/staff/logo.png" type="image/png">
+  <link rel="stylesheet" href="/staff/variables.css">
   <link rel="stylesheet" href="/staff/admin.css">
+  <script src="/staff/theme.js"></script>
 </head>
 <body class="app-page">
   <svg class="sprite" aria-hidden="true" focusable="false">
@@ -29,6 +31,7 @@
       <symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></symbol>
       <symbol id="i-xcircle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6M15 9l-6 6"/></symbol>
       <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m0 0-4-4m4 4 4-4M4 21h16"/></symbol>
+      <symbol id="i-palette" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.8-.9 1.8-1.8 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-1 .8-1.8 1.8-1.8H17a4 4 0 0 0 4-4c0-4.4-4-8-9-8z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10" cy="7" r="1"/><circle cx="14.5" cy="7" r="1"/></symbol>
       <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
       <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
       <symbol id="i-edit" viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></symbol>
@@ -85,6 +88,18 @@
           <input type="search" id="top-q" placeholder="Search quotes by reference, name or phone" autocomplete="off" maxlength="60">
         </form>
         <div class="topbar-right">
+          <div class="theme" id="theme-wrap">
+            <button type="button" class="btn outline theme-btn" id="theme-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="theme-menu" aria-label="Change theme" title="Change theme">
+              <svg class="icon" aria-hidden="true"><use href="#i-palette"/></svg><span class="theme-btn-label" id="theme-label">Theme</span><svg class="icon chev" aria-hidden="true"><use href="#i-chevron"/></svg>
+            </button>
+            <div class="theme-menu" id="theme-menu" role="menu" aria-label="Choose a theme" hidden>
+            <button type="button" class="theme-opt" role="menuitemradio" aria-checked="false" data-theme-pick="light"><span class="theme-sw sw-light" aria-hidden="true"></span><span class="theme-opt-text"><strong>Light</strong><small>Default corporate</small></span></button>
+            <button type="button" class="theme-opt" role="menuitemradio" aria-checked="false" data-theme-pick="dark"><span class="theme-sw sw-dark" aria-hidden="true"></span><span class="theme-opt-text"><strong>Dark</strong><small>Midnight navy</small></span></button>
+            <button type="button" class="theme-opt" role="menuitemradio" aria-checked="false" data-theme-pick="cyber"><span class="theme-sw sw-cyber" aria-hidden="true"></span><span class="theme-opt-text"><strong>Cyber Slate</strong><small>Dark with neon cyan</small></span></button>
+            <button type="button" class="theme-opt" role="menuitemradio" aria-checked="false" data-theme-pick="emerald"><span class="theme-sw sw-emerald" aria-hidden="true"></span><span class="theme-opt-text"><strong>Emerald</strong><small>Fresh and modern</small></span></button>
+            <button type="button" class="theme-opt" role="menuitemradio" aria-checked="false" data-theme-pick="system"><span class="theme-sw sw-system" aria-hidden="true"></span><span class="theme-opt-text"><strong>System default</strong><small>Follows your device</small></span></button>
+            </div>
+          </div>
           <div class="user-chip">
             <span class="avatar small" id="top-initials" aria-hidden="true"></span>
             <span class="user-chip-text"><strong id="top-name"></strong><small id="top-role"></small></span>
@@ -196,99 +211,235 @@
         </section>
 
         <section id="section-quotes" class="page" aria-labelledby="h-quotes" hidden>
-          <div class="page-head">
-            <h1 id="h-quotes">Quote Requests</h1>
-            <p>Review client enquiries and keep every request moving.</p>
-          </div>
-          <form class="card filters" id="filters" role="search">
-            <div class="field">
-              <label for="f-status">Status</label>
-              <select id="f-status"><option value="">All statuses</option></select>
+          <div class="page-head page-head-row">
+            <div>
+              <h1 id="h-quotes">Quote Requests</h1>
+              <p>Review client enquiries and keep every request moving.</p>
             </div>
+            <div class="head-actions">
+              <button type="button" class="btn outline" id="q-export"><svg class="icon" aria-hidden="true"><use href="#i-download"/></svg><span>Export CSV</span></button>
+              <button type="button" class="btn primary" id="q-new"><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg><span>New request</span></button>
+            </div>
+          </div>
+
+          <div class="chips" id="q-chips" role="group" aria-label="Filter by status"></div>
+
+          <form class="card filters q-filters" id="filters" role="search">
             <div class="field grow">
               <label for="f-q">Search</label>
-              <input type="search" id="f-q" placeholder="Reference, name or phone" autocomplete="off">
+              <input type="search" id="f-q" placeholder="Name, reference, phone…" autocomplete="off" maxlength="60">
             </div>
-            <button class="btn primary" id="f-go" type="submit">Search</button>
+            <div class="field">
+              <label for="f-cat">Insurance type</label>
+              <select id="f-cat">
+                <option value="">All types</option><option value="motor">Motor</option><option value="medical">Health</option><option value="home">Home</option>
+                <option value="commercial">Commercial</option><option value="travel">Travel</option><option value="other">Other</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="f-assigned">Assigned to</label>
+              <select id="f-assigned"><option value="">Anyone</option></select>
+            </div>
+            <div class="field"><label for="f-from">Received from</label><input type="date" id="f-from"></div>
+            <div class="field"><label for="f-to">to</label><input type="date" id="f-to"></div>
+            <div class="field">
+              <label for="f-size">Per page</label>
+              <select id="f-size"><option value="25" selected>25</option><option value="50">50</option><option value="100">100</option></select>
+            </div>
+            <button class="btn text-btn" id="q-clear" type="button" hidden>Clear filters</button>
           </form>
-          <div class="split" id="split">
-            <div class="card list">
-              <div class="table-scroll">
-                <table>
-                  <thead><tr><th scope="col">Reference</th><th scope="col">Name</th><th scope="col">Type</th><th scope="col">Status</th><th scope="col">Assigned</th><th scope="col">Received</th></tr></thead>
-                  <tbody id="rows"></tbody>
-                </table>
-              </div>
-              <p class="msg pad" id="list-msg" role="status" aria-live="polite"></p>
-              <div class="pager">
-                <button class="btn outline small" id="prev" type="button">Previous</button>
-                <span id="page-info" aria-live="polite"></span>
-                <button class="btn outline small" id="next" type="button">Next</button>
+
+          <div class="card list">
+            <div class="bulk" id="bulk" role="region" aria-label="Bulk actions" hidden>
+              <strong id="bulk-count" aria-live="polite"></strong>
+              <div class="bulk-tools">
+                <label class="sr-only" for="bulk-status">Change status of selected requests</label>
+                <select id="bulk-status"></select>
+                <button type="button" class="btn outline small" id="bulk-status-go">Apply</button>
+                <span id="bulk-assign-wrap" class="bulk-tools" hidden>
+                  <label class="sr-only" for="bulk-assign">Assign selected requests</label>
+                  <select id="bulk-assign"><option value="?">Assign to…</option></select>
+                  <button type="button" class="btn outline small" id="bulk-assign-go">Apply</button>
+                </span>
+                <button type="button" class="text-btn" id="bulk-clear">Clear selection</button>
               </div>
             </div>
-            <aside class="card detail" id="detail" aria-labelledby="d-ref" hidden>
-              <div class="detail-head">
-                <div><span class="eyebrow">Request details</span><h2 id="d-ref"></h2></div>
-                <button type="button" class="icon-btn" id="d-close" aria-label="Close details"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button>
-              </div>
-              <dl class="fields" id="d-fields"></dl>
-              <div class="field">
-                <label for="d-status">Status</label>
-                <select id="d-status"></select>
-              </div>
-              <div class="field" id="d-assign-wrap" hidden>
-                <label for="d-assign">Assigned to</label>
-                <select id="d-assign"></select>
-              </div>
-              <button class="btn primary block" id="d-save" type="button">Save changes</button>
-              <p class="msg" id="d-msg" role="status" aria-live="polite"></p>
-            </aside>
+            <div class="table-scroll">
+              <table class="quotes-table">
+                <caption class="sr-only">Quote requests. Use the column buttons to sort.</caption>
+                <thead>
+                  <tr id="q-head">
+                    <th scope="col" class="check-col"><input type="checkbox" id="sel-all" aria-label="Select all requests on this page"></th>
+                    <th scope="col" data-sort="reference" aria-sort="none"><button type="button" class="sort-btn">Reference</button></th>
+                    <th scope="col" data-sort="name" aria-sort="none"><button type="button" class="sort-btn">Client</button></th>
+                    <th scope="col">Type</th>
+                    <th scope="col" class="num">Value est.</th>
+                    <th scope="col" data-sort="status" aria-sort="none"><button type="button" class="sort-btn">Status</button></th>
+                    <th scope="col">Assigned</th>
+                    <th scope="col" data-sort="created_at" aria-sort="none"><button type="button" class="sort-btn">Received</button></th>
+                    <th scope="col" class="actions-col"><span class="sr-only">Open</span></th>
+                  </tr>
+                </thead>
+                <tbody id="rows"></tbody>
+              </table>
+            </div>
+            <p class="msg pad" id="list-msg" role="status" aria-live="polite"></p>
+            <div class="pager">
+              <button class="btn outline small" id="prev" type="button">Previous</button>
+              <span id="page-info" aria-live="polite"></span>
+              <button class="btn outline small" id="next" type="button">Next</button>
+            </div>
           </div>
         </section>
 
         <section id="section-reports" class="page" aria-labelledby="h-reports" hidden>
-          <div class="page-head">
-            <h1 id="h-reports">Reports</h1>
-            <p>Export your quote data for the period you choose.</p>
+          <div class="page-head page-head-row">
+            <div>
+              <h1 id="h-reports">Reports</h1>
+              <p>See how requests are moving, compare with the previous period and export the results.</p>
+            </div>
+            <div class="head-actions">
+              <button type="button" class="btn outline" id="r-copy"><span>Copy summary</span></button>
+              <button type="button" class="btn outline" id="r-pdf"><svg class="icon" aria-hidden="true"><use href="#i-download"/></svg><span>Print / PDF</span></button>
+              <button type="button" class="btn primary" id="r-csv"><svg class="icon" aria-hidden="true"><use href="#i-download"/></svg><span>Download CSV</span></button>
+            </div>
           </div>
-          <div class="card-grid">
-            <article class="card report-card">
-              <span class="kpi-icon"><svg class="icon" aria-hidden="true"><use href="#i-download"/></svg></span>
-              <h2>Quote requests export</h2>
-              <p class="subtle">A CSV file of the requests received between two dates, including client details and submitted form data. It contains only the requests you are permitted to view.</p>
-              <form id="report-form" novalidate>
-                <div class="field-row">
-                  <div class="field">
-                    <label for="report-from">From</label>
-                    <input id="report-from" type="date" required>
-                  </div>
-                  <div class="field">
-                    <label for="report-to">To</label>
-                    <input id="report-to" type="date" required>
-                  </div>
-                </div>
-                <button class="btn primary" id="report-download" type="submit">Download CSV</button>
-                <p class="msg" id="report-msg" role="status" aria-live="polite"></p>
-              </form>
-            </article>
+
+          <div class="card toolbar" role="group" aria-label="Report filters">
+            <div class="field"><label for="r-preset">Period</label><select id="r-preset"></select></div>
+            <div class="field-row custom-range" id="r-custom" hidden>
+              <div class="field"><label for="r-from">From</label><input type="date" id="r-from"></div>
+              <div class="field"><label for="r-to">To</label><input type="date" id="r-to"></div>
+            </div>
+            <div class="field">
+              <label for="r-cat">Policy category</label>
+              <select id="r-cat">
+                <option value="">All policies</option><option value="motor">Motor</option><option value="medical">Health</option><option value="home">Home</option>
+                <option value="commercial">Commercial</option><option value="travel">Travel</option><option value="other">Other</option>
+              </select>
+            </div>
+            <div class="field" id="r-staff-wrap" hidden><label for="r-staff">Staff member</label><select id="r-staff"><option value="">Everyone</option></select></div>
           </div>
+          <p class="period-line" id="r-period" aria-live="polite"></p>
+          <p class="msg" id="report-msg" role="status" aria-live="polite"></p>
+
+          <div class="kpi-grid report-kpis" id="r-kpis"></div>
+
+          <div class="viz-grid">
+            <section class="card panel" aria-labelledby="h-r-trend">
+              <div class="panel-head">
+                <div><h2 id="h-r-trend">Requests over time</h2><p class="subtle small-text" id="r-trend-sub">Requests received vs. converted</p></div>
+                <ul class="legend" aria-hidden="true"><li><i class="sw sw-received"></i>Received</li><li><i class="sw sw-converted"></i>Converted</li></ul>
+              </div>
+              <div class="chart-wrap" id="r-trend"></div>
+              <p class="msg pad" id="r-trend-msg" role="status"></p>
+            </section>
+            <section class="card panel" aria-labelledby="h-r-status">
+              <div class="panel-head"><div><h2 id="h-r-status">Where requests stand</h2><p class="subtle small-text">By current status</p></div></div>
+              <div id="r-status"></div>
+            </section>
+          </div>
+
+          <div class="viz-grid even">
+            <section class="card panel" aria-labelledby="h-r-cat">
+              <div class="panel-head"><div><h2 id="h-r-cat">By category</h2><p class="subtle small-text">Share of requests received</p></div></div>
+              <div class="donut-wrap" id="r-donut"></div>
+              <p class="msg pad" id="r-donut-msg" role="status"></p>
+            </section>
+            <section class="card panel" aria-labelledby="h-r-conv">
+              <div class="panel-head"><div><h2 id="h-r-conv">Conversion by category</h2><p class="subtle small-text">How many became policies</p></div></div>
+              <div class="table-scroll">
+                <table id="r-cat-table" class="compact" hidden>
+                  <thead><tr><th scope="col">Category</th><th scope="col" class="num">Requests</th><th scope="col" class="num">Converted</th><th scope="col" class="num">Rate</th></tr></thead>
+                  <tbody id="r-cat-rows"></tbody>
+                </table>
+              </div>
+            </section>
+          </div>
+
+          <section class="card panel" id="r-staff-card" aria-labelledby="h-r-staff" hidden>
+            <div class="panel-head">
+              <div><h2 id="h-r-staff">Staff performance</h2><p class="subtle small-text">Requests assigned in this period</p></div>
+              <p class="callout" id="r-unassigned" hidden><span><strong id="r-unassigned-n"></strong> no owner yet.</span> <button type="button" class="text-btn" id="r-unassigned-go">Review them</button></p>
+            </div>
+            <div class="table-scroll">
+              <table class="compact">
+                <thead><tr><th scope="col">Staff member</th><th scope="col" class="num">Assigned</th><th scope="col" class="num">Open</th><th scope="col" class="num">Converted</th><th scope="col" class="num">Rate</th></tr></thead>
+                <tbody id="r-staff-rows"></tbody>
+              </table>
+            </div>
+            <p class="msg pad" id="r-staff-msg" role="status"></p>
+          </section>
         </section>
 
         <section id="section-profile" class="page" aria-labelledby="h-profile" hidden>
           <div class="page-head">
             <h1 id="h-profile">My Profile</h1>
-            <p>Your staff account information.</p>
+            <p>Your account, your numbers and your recent activity.</p>
           </div>
-          <div class="card pad-lg narrow">
-            <dl class="fields" id="profile-fields"></dl>
-            <p class="msg" id="profile-msg" role="status" aria-live="polite"></p>
+          <p class="msg" id="profile-msg" role="status" aria-live="polite"></p>
+
+          <div class="card profile-hero">
+            <span class="avatar xl" id="p-avatar" aria-hidden="true"></span>
+            <div class="profile-id">
+              <div id="p-view">
+                <div class="profile-line"><h2 id="p-name"></h2><span class="role-chip" id="p-role"></span></div>
+                <p id="p-title" class="profile-sub"></p>
+                <p id="p-email" class="profile-sub"></p>
+                <button type="button" class="btn outline small" id="p-edit-btn" hidden><svg class="icon" aria-hidden="true"><use href="#i-edit"/></svg><span>Edit profile</span></button>
+                <p class="hint" id="p-locked" hidden>Your name and job title are managed by your administrator.</p>
+              </div>
+              <form id="p-edit" novalidate hidden>
+                <div class="field-row">
+                  <div class="field"><label for="p-fullname">Full name</label><input type="text" id="p-fullname" maxlength="100" autocomplete="name"></div>
+                  <div class="field"><label for="p-jobtitle">Job title</label><input type="text" id="p-jobtitle" maxlength="100" autocomplete="organization-title"></div>
+                </div>
+                <div class="form-actions">
+                  <button type="submit" class="btn primary small" id="p-save">Save changes</button>
+                  <button type="button" class="btn outline small" id="p-cancel">Cancel</button>
+                </div>
+                <p class="msg" id="p-edit-msg" role="status" aria-live="polite"></p>
+              </form>
+            </div>
           </div>
+
+          <div class="kpi-grid report-kpis" id="p-kpis"></div>
+
+          <div class="viz-grid even">
+            <section class="card panel" aria-labelledby="h-p-att">
+              <div class="panel-head"><h2 id="h-p-att">Needs your attention</h2><button type="button" class="btn outline small" id="p-all-mine" hidden>See all mine</button></div>
+              <ul class="feed" id="p-attention"></ul>
+              <p class="msg pad" id="p-attention-msg" role="status"></p>
+            </section>
+            <section class="card panel" aria-labelledby="h-p-sec">
+              <div class="panel-head"><h2 id="h-p-sec">Account &amp; security</h2></div>
+              <dl class="fields">
+                <dt>Last sign-in</dt><dd id="p-last-login"></dd>
+                <dt>Password last changed</dt><dd id="p-pwd"></dd>
+              </dl>
+              <div class="form-actions">
+                <button type="button" class="btn outline small" id="p-go-password">Change password</button>
+                <button type="button" class="btn outline small" id="p-go-theme">Appearance</button>
+              </div>
+            </section>
+          </div>
+
+          <section class="card panel" aria-labelledby="h-p-act">
+            <div class="panel-head"><div><h2 id="h-p-act">Recent account activity</h2><p class="subtle small-text">Sign-ins and the changes you have made. If something here is not you, change your password and tell your administrator.</p></div></div>
+            <ul class="feed" id="p-activity"></ul>
+            <p class="msg pad" id="p-activity-msg" role="status"></p>
+          </section>
         </section>
 
         <section id="section-settings" class="page" aria-labelledby="h-settings" hidden>
           <div class="page-head">
             <h1 id="h-settings">Settings</h1>
-            <p>Manage the security of your account.</p>
+            <p>Choose how the portal looks and manage the security of your account.</p>
+          </div>
+          <div class="card pad-lg narrow appearance">
+            <h2 id="h-appearance">Appearance</h2>
+            <p class="subtle">Your choice is remembered on this device.</p>
+            <div class="theme-cards" role="radiogroup" aria-labelledby="h-appearance"><button type="button" class="theme-card" role="radio" aria-checked="false" data-theme-pick="light"><span class="theme-sw big sw-light" aria-hidden="true"></span><span>Light</span></button><button type="button" class="theme-card" role="radio" aria-checked="false" data-theme-pick="dark"><span class="theme-sw big sw-dark" aria-hidden="true"></span><span>Dark</span></button><button type="button" class="theme-card" role="radio" aria-checked="false" data-theme-pick="cyber"><span class="theme-sw big sw-cyber" aria-hidden="true"></span><span>Cyber Slate</span></button><button type="button" class="theme-card" role="radio" aria-checked="false" data-theme-pick="emerald"><span class="theme-sw big sw-emerald" aria-hidden="true"></span><span>Emerald</span></button><button type="button" class="theme-card" role="radio" aria-checked="false" data-theme-pick="system"><span class="theme-sw big sw-system" aria-hidden="true"></span><span>System default</span></button></div>
           </div>
           <div class="card pad-lg narrow">
             <h2>Change password</h2>
@@ -318,10 +469,46 @@
   <div class="menu" id="status-menu" role="menu" aria-label="Update status" hidden></div>
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
-  <dialog class="dlg drawer" id="dlg-view" aria-labelledby="v-ref">
-    <div class="dlg-head"><div><span class="eyebrow">Quick view</span><h2 id="v-ref"></h2></div><button type="button" class="icon-btn" data-close aria-label="Close"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button></div>
-    <div class="dlg-body"><div id="v-status"></div><dl class="fields" id="v-fields"></dl><p class="msg" id="v-msg" role="status"></p></div>
-    <div class="dlg-foot"><button type="button" class="btn outline" id="v-open">Open in Quote Requests</button></div>
+  <dialog class="dlg drawer wide" id="dlg-quote-detail" aria-labelledby="qd-ref" data-list="0">
+    <div class="dlg-head">
+      <div class="qd-title"><span class="eyebrow" id="qd-type"></span><h2 id="qd-ref"></h2><div class="qd-status" id="qd-status"></div></div>
+      <div class="head-tools">
+        <span id="qd-nav" class="head-tools" hidden>
+          <button type="button" class="icon-btn" id="qd-prev" aria-label="Previous request" title="Previous"><svg class="icon flip" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+          <button type="button" class="icon-btn" id="qd-next" aria-label="Next request" title="Next"><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+        </span>
+        <button type="button" class="icon-btn" data-close aria-label="Close"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button>
+      </div>
+    </div>
+    <div class="dlg-body">
+      <section class="qd-block" aria-label="Client"><div id="qd-client"></div></section>
+
+      <section class="qd-block" aria-labelledby="qd-h-manage">
+        <h3 id="qd-h-manage">Manage</h3>
+        <div class="field-row">
+          <div class="field"><label for="qd-set-status">Status</label><select id="qd-set-status"></select></div>
+          <div class="field" id="qd-assign-wrap" hidden><label for="qd-assign">Assigned to</label><select id="qd-assign"></select></div>
+        </div>
+        <button type="button" class="btn primary small" id="qd-save">Save changes</button>
+        <p class="msg" id="qd-msg" role="status" aria-live="polite"></p>
+      </section>
+
+      <section class="qd-block" aria-labelledby="qd-h-details">
+        <h3 id="qd-h-details">Request details</h3>
+        <dl class="fields" id="qd-fields"></dl>
+      </section>
+
+      <section class="qd-block" aria-labelledby="qd-h-notes">
+        <h3 id="qd-h-notes">Notes &amp; history</h3>
+        <form id="note-form" novalidate>
+          <label class="sr-only" for="qd-note">Add a note</label>
+          <textarea id="qd-note" rows="3" maxlength="1000" placeholder="Add a note for your team (what was agreed, what to chase…)"></textarea>
+          <div class="form-actions"><button type="submit" class="btn outline small" id="qd-note-add">Add note</button></div>
+          <p class="msg" id="qd-note-msg" role="status" aria-live="polite"></p>
+        </form>
+        <ul class="timeline" id="qd-timeline"></ul>
+      </section>
+    </div>
   </dialog>
 
   <dialog class="dlg" id="dlg-assign" aria-labelledby="a-title">
@@ -389,7 +576,11 @@
 
   <section id="print-report" class="print-report" hidden></section>
   <script src="/staff/portal.js"></script>
+  <script src="/staff/charts.js"></script>
   <script src="/staff/overview.js"></script>
+  <script src="/staff/quotes.js"></script>
+  <script src="/staff/reports.js"></script>
+  <script src="/staff/profile.js"></script>
   <script src="/staff/dashboard.js"></script>
 </body>
 </html>

@@ -1,0 +1,54 @@
+<!--
+  Jaza theme switcher: Tailwind version (reference snippet, not loaded by the portal).
+  The staff portal's security policy blocks the Tailwind CDN, so the portal itself uses the plain-CSS version
+  in views/dashboard.html. Use this one in any Tailwind project.
+
+  It works with the same theme.js and variables.css: theme.js only needs
+    #theme-wrap, #theme-btn, #theme-menu, #theme-label and the data-theme-pick="light|dark|cyber|emerald|system" buttons.
+  Colours come from the CSS variables, so the switcher itself re-themes automatically.
+-->
+<div id="theme-wrap" class="relative">
+  <button id="theme-btn" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="theme-menu" aria-label="Change theme"
+          class="inline-flex min-h-[42px] items-center gap-2 rounded-lg border border-[var(--accent-ink)] bg-[var(--card)] pl-3 pr-2.5
+                 text-sm font-semibold text-[var(--accent-ink)] transition hover:bg-[var(--accent-soft)]
+                 focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-[var(--focus-ring)]
+                 aria-expanded:bg-[var(--accent-soft)]">
+    <!-- palette icon -->
+    <svg class="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.8-.9 1.8-1.8 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-1 .8-1.8 1.8-1.8H17a4 4 0 0 0 4-4c0-4.4-4-8-9-8z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10" cy="7" r="1"/><circle cx="14.5" cy="7" r="1"/></svg>
+    <span id="theme-label" class="hidden sm:inline">Theme</span>
+    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+  </button>
+
+  <div id="theme-menu" role="menu" aria-label="Choose a theme" hidden
+       class="absolute right-0 top-[calc(100%+8px)] z-50 w-64 rounded-xl border border-[var(--line)] bg-[var(--card)] p-1.5 shadow-[var(--shadow-lg)]">
+
+    <!-- repeat this button for each theme; only data-theme-pick, the swatch gradient and the text change -->
+    <button type="button" role="menuitemradio" aria-checked="false" data-theme-pick="light"
+            class="group flex w-full items-center gap-3 rounded-lg px-2.5 py-2 text-left text-[var(--ink)] hover:bg-[var(--accent-soft)]
+                   focus-visible:bg-[var(--accent-soft)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--accent)]">
+      <span class="h-7 w-7 flex-none rounded-full border border-slate-500/50 bg-[linear-gradient(135deg,#FFFFFF_50%,#0A3A75_50%)]" aria-hidden="true"></span>
+      <span class="grid flex-1 leading-snug"><strong class="text-sm group-aria-checked:text-[var(--accent-ink)]">Light</strong><small class="text-xs text-[var(--muted)]">Default corporate</small></span>
+      <span class="hidden font-bold text-[var(--accent-ink)] group-aria-checked:inline" aria-hidden="true">✓</span>
+    </button>
+    <button type="button" role="menuitemradio" aria-checked="false" data-theme-pick="dark" class="group flex w-full items-center gap-3 rounded-lg px-2.5 py-2 text-left text-[var(--ink)] hover:bg-[var(--accent-soft)] focus-visible:bg-[var(--accent-soft)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--accent)]">
+      <span class="h-7 w-7 flex-none rounded-full border border-slate-500/50 bg-[linear-gradient(135deg,#0B0F19_50%,#3B82F6_50%)]" aria-hidden="true"></span>
+      <span class="grid flex-1 leading-snug"><strong class="text-sm group-aria-checked:text-[var(--accent-ink)]">Dark</strong><small class="text-xs text-[var(--muted)]">Midnight navy</small></span>
+      <span class="hidden font-bold text-[var(--accent-ink)] group-aria-checked:inline" aria-hidden="true">✓</span>
+    </button>
+    <button type="button" role="menuitemradio" aria-checked="false" data-theme-pick="cyber" class="group flex w-full items-center gap-3 rounded-lg px-2.5 py-2 text-left text-[var(--ink)] hover:bg-[var(--accent-soft)] focus-visible:bg-[var(--accent-soft)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--accent)]">
+      <span class="h-7 w-7 flex-none rounded-full border border-slate-500/50 bg-[linear-gradient(135deg,#1E293B_50%,#06B6D4_50%)]" aria-hidden="true"></span>
+      <span class="grid flex-1 leading-snug"><strong class="text-sm group-aria-checked:text-[var(--accent-ink)]">Cyber Slate</strong><small class="text-xs text-[var(--muted)]">Dark with neon cyan</small></span>
+      <span class="hidden font-bold text-[var(--accent-ink)] group-aria-checked:inline" aria-hidden="true">✓</span>
+    </button>
+    <button type="button" role="menuitemradio" aria-checked="false" data-theme-pick="emerald" class="group flex w-full items-center gap-3 rounded-lg px-2.5 py-2 text-left text-[var(--ink)] hover:bg-[var(--accent-soft)] focus-visible:bg-[var(--accent-soft)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--accent)]">
+      <span class="h-7 w-7 flex-none rounded-full border border-slate-500/50 bg-[linear-gradient(135deg,#F0FDF4_50%,#059669_50%)]" aria-hidden="true"></span>
+      <span class="grid flex-1 leading-snug"><strong class="text-sm group-aria-checked:text-[var(--accent-ink)]">Emerald</strong><small class="text-xs text-[var(--muted)]">Fresh and modern</small></span>
+      <span class="hidden font-bold text-[var(--accent-ink)] group-aria-checked:inline" aria-hidden="true">✓</span>
+    </button>
+    <button type="button" role="menuitemradio" aria-checked="false" data-theme-pick="system" class="group flex w-full items-center gap-3 rounded-lg px-2.5 py-2 text-left text-[var(--ink)] hover:bg-[var(--accent-soft)] focus-visible:bg-[var(--accent-soft)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--accent)]">
+      <span class="h-7 w-7 flex-none rounded-full border border-slate-500/50 bg-[linear-gradient(90deg,#FFFFFF_50%,#0B0F19_50%)]" aria-hidden="true"></span>
+      <span class="grid flex-1 leading-snug"><strong class="text-sm group-aria-checked:text-[var(--accent-ink)]">System default</strong><small class="text-xs text-[var(--muted)]">Follows your device</small></span>
+      <span class="hidden font-bold text-[var(--accent-ink)] group-aria-checked:inline" aria-hidden="true">✓</span>
+    </button>
+  </div>
+</div>

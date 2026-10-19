@@ -1,0 +1,261 @@
+/* =====================================================================
+   Jaza Insurance Agency staff portal: theme engine (design tokens)
+   ---------------------------------------------------------------------
+   Every colour used by admin.css comes from a variable defined here.
+   theme.js sets  <html data-theme="light|dark|cyber|emerald">.
+   "System default" is resolved by theme.js to light or dark.
+
+   Token guide
+     --accent            brand colour for graphics: chart bars, focus border, borders
+     --accent-ink        the accent used AS TEXT or an outline on a card (always >= 4.5:1)
+     --accent-solid      background of primary buttons / active menu item
+     --on-accent         text colour that sits on --accent-solid (always >= 4.5:1)
+     --accent-soft       tinted hover / icon-tile background
+     --line              decorative dividers (cards, table rows)
+     --line-strong       borders of form controls (>= 3:1 on their background)
+     --st-*-bg / -fg     status badge pairs (all >= 7:1, WCAG AAA)
+   ===================================================================== */
+
+/* ---------- 1. Light: default corporate ---------- */
+:root,
+[data-theme="light"] {
+  color-scheme: light;
+
+  --bg: #F4F6F9;
+  --card: #FFFFFF;
+  --sidebar-bg: #FFFFFF;
+  --topbar-bg: #FFFFFF;
+  --input-bg: #FFFFFF;
+
+  --accent: #0A3A75;
+  --accent-2: #1A73E8;
+  --accent-ink: #0A3A75;
+  --accent-solid: #0A3A75;
+  --accent-solid-hover: #082D5C;
+  --on-accent: #FFFFFF;
+  --accent-soft: #E8EFFA;
+
+  --ink: #1E293B;
+  --muted: #64748B;
+  --muted-page: #5A6A80;          /* muted text placed straight on the page background (#64748B is 4.4:1 there) */
+  --placeholder: #64748B;
+  --line: #E2E8F0;
+  --line-strong: #7C8AA0;
+  --hover: #F8FAFC;
+  --thead: #F8FAFC;
+  --track: #EEF1F5;
+  --grid: #E8ECF2;
+
+  --danger: #B42318;
+  --danger-soft: #FDE7E4;
+  --ok: #17663F;
+
+  --focus-ring: rgba(10, 58, 117, .55);
+  --focus-glow: rgba(10, 58, 117, .22);
+  --shadow: 0 1px 2px rgba(16, 32, 64, .05), 0 1px 3px rgba(16, 32, 64, .04);
+  --shadow-hover: 0 4px 14px rgba(16, 32, 64, .08);
+  --shadow-lg: 0 24px 60px rgba(16, 32, 64, .3);
+  --scrim: rgba(16, 32, 64, .5);
+
+  --tooltip-bg: #1E293B;   --tooltip-fg: #FFFFFF;
+  --toast-ok-bg: #14532D;  --toast-ok-fg: #FFFFFF;
+  --toast-err-bg: #B42318; --toast-err-fg: #FFFFFF;
+
+  --logo-plate: transparent;
+  --wm-opacity: .03;
+
+  /* charts and categories */
+  --c-received: #0A3A75;
+  --c-converted: #1F9D61;
+  --c-area: rgba(31, 157, 97, .16);
+  --cat-motor: #0A3A75;  --cat-medical: #12A594;  --cat-home: #D97706;  --cat-travel: #7C4DDB;  --cat-other: #7C8AA0;
+
+  /* status badges (light set) */
+  --st-new-bg: #DBEAFE;     --st-new-fg: #1E3A8A;
+  --st-prog-bg: #FEF3C7;    --st-prog-fg: #713F12;
+  --st-wait-bg: #EDE9FE;    --st-wait-fg: #4C1D95;
+  --st-ok-bg: #D1FAE5;      --st-ok-fg: #064E3B;
+  --st-closed-bg: #E2E8F0;  --st-closed-fg: #1E293B;
+}
+
+/* ---------- 2. Dark: midnight navy ---------- */
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: #0B0F19;
+  --card: #111827;
+  --sidebar-bg: #0D131F;
+  --topbar-bg: #111827;
+  --input-bg: #0B0F19;
+
+  --accent: #3B82F6;
+  --accent-2: #60A5FA;
+  --accent-ink: #60A5FA;
+  --accent-solid: #3B82F6;
+  --accent-solid-hover: #60A5FA;
+  --on-accent: #0B0F19;
+  --accent-soft: rgba(59, 130, 246, .16);
+
+  --ink: #F8FAFC;
+  --muted: #94A3B8;
+  --muted-page: #94A3B8;
+  --placeholder: #94A3B8;
+  --line: #1F2937;
+  --line-strong: #64748B;
+  --hover: #172136;
+  --thead: #0D131F;
+  --track: #1F2937;
+  --grid: #1F2937;
+
+  --danger: #FCA5A5;
+  --danger-soft: rgba(248, 113, 113, .16);
+  --ok: #86EFAC;
+
+  --focus-ring: rgba(147, 197, 253, .8);
+  --focus-glow: rgba(59, 130, 246, .35);
+  --shadow: 0 4px 20px -2px rgba(0, 0, 0, .5);
+  --shadow-hover: 0 8px 28px -2px rgba(0, 0, 0, .65);
+  --shadow-lg: 0 24px 60px rgba(0, 0, 0, .7);
+  --scrim: rgba(0, 0, 0, .65);
+
+  --tooltip-bg: #F1F5F9;   --tooltip-fg: #0B0F19;
+  --toast-ok-bg: #064E3B;  --toast-ok-fg: #D1FAE5;
+  --toast-err-bg: #7F1D1D; --toast-err-fg: #FEE2E2;
+
+  --logo-plate: #FFFFFF;
+  --wm-opacity: .04;
+
+  --c-received: #3B82F6;
+  --c-converted: #34D399;
+  --c-area: rgba(52, 211, 153, .16);
+  --cat-motor: #3B82F6;  --cat-medical: #2DD4BF;  --cat-home: #FB923C;  --cat-travel: #A78BFA;  --cat-other: #94A3B8;
+}
+
+/* ---------- 3. Cyber slate: dark slate, neon accent ---------- */
+[data-theme="cyber"] {
+  color-scheme: dark;
+
+  --bg: #0F172A;
+  --card: #1E293B;
+  --sidebar-bg: #111C30;
+  --topbar-bg: #1E293B;
+  --input-bg: #0F172A;
+
+  --accent: #06B6D4;
+  --accent-2: #8B5CF6;
+  --accent-ink: #22D3EE;
+  --accent-solid: #06B6D4;
+  --accent-solid-hover: #22D3EE;
+  --on-accent: #0F172A;
+  --accent-soft: rgba(6, 182, 212, .14);
+
+  --ink: #F1F5F9;
+  --muted: #94A3B8;
+  --muted-page: #94A3B8;
+  --placeholder: #94A3B8;
+  --line: #334155;
+  --line-strong: #7C8CA3;
+  --hover: #263449;
+  --thead: #172033;
+  --track: #334155;
+  --grid: #334155;
+
+  --danger: #FCA5A5;
+  --danger-soft: rgba(248, 113, 113, .16);
+  --ok: #86EFAC;
+
+  --focus-ring: rgba(103, 232, 249, .9);
+  --focus-glow: rgba(6, 182, 212, .4);
+  --shadow: 0 0 0 1px rgba(6, 182, 212, .08), 0 4px 24px -6px rgba(6, 182, 212, .28);
+  --shadow-hover: 0 0 0 1px rgba(6, 182, 212, .3), 0 8px 30px -6px rgba(6, 182, 212, .4);
+  --shadow-lg: 0 0 0 1px rgba(6, 182, 212, .25), 0 24px 60px rgba(2, 6, 23, .8);
+  --scrim: rgba(2, 6, 23, .7);
+
+  --tooltip-bg: #F1F5F9;   --tooltip-fg: #0F172A;
+  --toast-ok-bg: #064E3B;  --toast-ok-fg: #D1FAE5;
+  --toast-err-bg: #7F1D1D; --toast-err-fg: #FEE2E2;
+
+  --logo-plate: #FFFFFF;
+  --wm-opacity: .04;
+
+  --c-received: #06B6D4;
+  --c-converted: #A78BFA;
+  --c-area: rgba(167, 139, 250, .18);
+  --cat-motor: #06B6D4;  --cat-medical: #34D399;  --cat-home: #FBBF24;  --cat-travel: #A78BFA;  --cat-other: #94A3B8;
+}
+
+/* ---------- 4. Emerald corporate: fresh and modern ---------- */
+[data-theme="emerald"] {
+  color-scheme: light;
+
+  --bg: #F0FDF4;
+  --card: #FFFFFF;
+  --sidebar-bg: #FFFFFF;
+  --topbar-bg: #FFFFFF;
+  --input-bg: #FFFFFF;
+
+  --accent: #059669;
+  --accent-2: #0D9488;
+  --accent-ink: #047857;          /* #059669 is only 3.8:1 on white, so text and buttons use this deeper shade */
+  --accent-solid: #047857;
+  --accent-solid-hover: #065F46;
+  --on-accent: #FFFFFF;
+  --accent-soft: rgba(5, 150, 105, .10);
+
+  --ink: #064E3B;
+  --muted: #3F6B5A;
+  --muted-page: #3F6B5A;
+  --placeholder: #4B7766;
+  --line: #DCFCE7;
+  --line-strong: #5E9279;
+  --hover: #F0FDF4;
+  --thead: #F0FDF4;
+  --track: #DCFCE7;
+  --grid: #E4F5EA;
+
+  --danger: #B42318;
+  --danger-soft: #FDE7E4;
+  --ok: #047857;
+
+  --focus-ring: rgba(4, 120, 87, .6);
+  --focus-glow: rgba(5, 150, 105, .25);
+  --shadow: 0 1px 2px rgba(6, 78, 59, .06), 0 1px 3px rgba(6, 78, 59, .05);
+  --shadow-hover: 0 4px 14px rgba(6, 78, 59, .12);
+  --shadow-lg: 0 24px 60px rgba(6, 78, 59, .3);
+  --scrim: rgba(6, 40, 30, .55);
+
+  --tooltip-bg: #064E3B;   --tooltip-fg: #FFFFFF;
+  --toast-ok-bg: #064E3B;  --toast-ok-fg: #FFFFFF;
+  --toast-err-bg: #B42318; --toast-err-fg: #FFFFFF;
+
+  --logo-plate: transparent;
+  --wm-opacity: .035;
+
+  --c-received: #059669;
+  --c-converted: #2563EB;
+  --c-area: rgba(37, 99, 235, .14);
+  --cat-motor: #047857;  --cat-medical: #0284C7;  --cat-home: #D97706;  --cat-travel: #8B5CF6;  --cat-other: #7C8AA0;
+}
+
+/* Dark themes share one set of status badges (light and emerald use the light set above) */
+[data-theme="dark"],
+[data-theme="cyber"] {
+  --st-new-bg: #1E3A8A;     --st-new-fg: #DBEAFE;
+  --st-prog-bg: #422006;    --st-prog-fg: #FDE68A;
+  --st-wait-bg: #2E1065;    --st-wait-fg: #DDD6FE;
+  --st-ok-bg: #064E3B;      --st-ok-fg: #A7F3D0;
+  --st-closed-bg: #334155;  --st-closed-fg: #F1F5F9;
+}
+
+/* ---------- Smooth 200 ms switch (theme.js adds .theme-switching for a moment, so normal hovers stay snappy) ---------- */
+html.theme-switching,
+html.theme-switching *,
+html.theme-switching *::before,
+html.theme-switching *::after {
+  transition: background-color .2s ease, color .2s ease, border-color .2s ease, fill .2s ease, stroke .2s ease, box-shadow .2s ease, outline-color .2s ease !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  html.theme-switching, html.theme-switching *, html.theme-switching *::before, html.theme-switching *::after { transition: none !important; }
+}
+/* The printed monthly report is always black on white, whatever theme is on screen */
+@media print { html[data-theme] { color-scheme: light; } }

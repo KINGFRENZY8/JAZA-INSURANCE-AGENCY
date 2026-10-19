@@ -7,25 +7,21 @@ window.Overview = (function () {
 
   const STATUS_TEXT = { new: "New", in_progress: "In progress", awaiting_client: "Awaiting client", quoted: "Quoted", converted: "Converted", closed: "Closed" };
   const STATUSES = Object.keys(STATUS_TEXT);
-  const CATS = { motor: "Motor", medical: "Health", home: "Home", travel: "Travel", other: "Other" };
   const KPI = [["#stat-total", "total"], ["#stat-new", "new"], ["#stat-progress", "in_progress"], ["#stat-awaiting", "awaiting_client"],
                ["#stat-quoted", "quoted"], ["#stat-converted", "converted"], ["#stat-closed", "closed"]];
   const SUPPORT_PHONE = "+254 794 794 410";
-  const NS = "http://www.w3.org/2000/svg";
 
-  let ctx = null, seq = 0, staffCache = null, tip = null, lastTrend = null;
+  let ctx = null, seq = 0, staffCache = null, lastTrend = null;
 
   // ------------------------------------------------------------ small helpers
   const kes = (n) => "KES " + Number(n).toLocaleString("en-KE");
   const digitsOnly = (v) => Number(String(v || "").replace(/[^\d]/g, "")) || 0;
-  const humanize = (key) => { const t = String(key).replace(/([a-z])([A-Z])/g, "$1 $2").replace(/[_-]+/g, " ").trim().toLowerCase(); return t.charAt(0).toUpperCase() + t.slice(1); };
-  const svg = (tag, attrs, parent) => {
-    const n = document.createElementNS(NS, tag);
-    Object.keys(attrs || {}).forEach((k) => n.setAttribute(k, attrs[k]));
-    if (parent) parent.appendChild(n);
-    return n;
+  const NS = "http://www.w3.org/2000/svg";
+  const icon = (name) => {
+    const s = document.createElementNS(NS, "svg"), u = document.createElementNS(NS, "use");
+    s.setAttribute("class", "icon"); s.setAttribute("aria-hidden", "true"); u.setAttribute("href", "#i-" + name); s.appendChild(u);
+    return s;
   };
-  const icon = (name) => { const s = svg("svg", { class: "icon", "aria-hidden": "true" }); svg("use", { href: "#i-" + name }, s); return s; };
   function ago(d) {
     const m = Math.round((Date.now() - new Date(d).getTime()) / 60000);
     if (m < 1) return "just now";
@@ -97,93 +93,17 @@ window.Overview = (function () {
     }
   }
 
-  // ------------------------------------------------------------ trend chart (bars = received, line/area = converted)
-  function bucketLabel(iso, gran) {
-    const d = new Date(iso + ":00Z");
-    if (gran === "hour") return d.toLocaleTimeString("en-GB", { hour: "numeric", hour12: true, timeZone: "UTC" }).replace(" ", "");
-    if (gran === "month") return d.toLocaleDateString("en-GB", { month: "short", year: "2-digit", timeZone: "UTC" });
-    return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", timeZone: "UTC" });
-  }
-
+  // ------------------------------------------------------------ charts (drawn by charts.js)
   function renderTrend(rows, gran) {
     lastTrend = [rows, gran];
-    const wrap = $("#trend-chart"); wrap.replaceChildren();
     const rec = rows.reduce((a, r) => a + r.received, 0), conv = rows.reduce((a, r) => a + r.converted, 0);
     $("#trend-sub").textContent = rec ? rec + " received · " + conv + " converted (" + Math.round((conv / rec) * 100) + "%) · " + rangeLabel() : "Requests received vs. converted · " + rangeLabel();
+    Charts.trend($("#trend-chart"), rows, gran, $("#trend-sub").textContent);
     say("#trend-msg", rec ? "" : "No requests in this period.");
-    if (!rec) return;
-
-    const W = Math.max(300, Math.min(760, wrap.clientWidth || 640)), H = W < 480 ? 250 : 290, L = 38, R = 10, T = 14, B = 34, iw = W - L - R, ih = H - T - B;
-    const max = Math.max(...rows.map((r) => r.received), 1);
-    const step = max <= 4 ? 1 : Math.ceil(max / 4 / (max > 20 ? 5 : 1)) * (max > 20 ? 5 : 1);
-    const top = Math.ceil(max / step) * step;
-    const y = (v) => T + ih - (v / top) * ih;
-    const band = iw / rows.length, bw = Math.min(band * 0.62, 34), cx = (i) => L + band * i + band / 2;
-
-    const root = svg("svg", { viewBox: "0 0 " + W + " " + H, class: "chart", role: "group", "aria-label": "Chart of requests received and converted. " + $("#trend-sub").textContent });
-    for (let v = 0; v <= top; v += step) {
-      svg("line", { x1: L, x2: W - R, y1: y(v), y2: y(v), class: v ? "grid" : "axis" }, root);
-      svg("text", { x: L - 8, y: y(v) + 4, class: "tick", "text-anchor": "end" }, root).textContent = v;
-    }
-    rows.forEach((r, i) => { if (r.received) svg("rect", { x: cx(i) - bw / 2, y: y(r.received), width: bw, height: y(0) - y(r.received), rx: 3, class: "bar-received" }, root); });
-    const pts = rows.map((r, i) => [cx(i), y(r.converted)]);
-    if (rows.length > 1) {
-      svg("path", { d: "M" + pts[0][0] + "," + y(0) + " L" + pts.map((p) => p.join(",")).join(" L") + " L" + pts[pts.length - 1][0] + "," + y(0) + "Z", class: "area-converted" }, root);
-      svg("path", { d: "M" + pts.map((p) => p.join(",")).join(" L"), class: "line-converted" }, root);
-    }
-    pts.forEach((p) => svg("circle", { cx: p[0], cy: p[1], r: 3.5, class: "dot-converted" }, root));
-    const every = Math.ceil(rows.length / 8);
-    rows.forEach((r, i) => { if (i % every === 0) svg("text", { x: cx(i), y: H - 10, class: "tick", "text-anchor": "middle" }, root).textContent = bucketLabel(r.bucket, gran); });
-
-    // one focusable hit area per bucket, so the tooltip works with mouse, touch and keyboard
-    rows.forEach((r, i) => {
-      const label = bucketLabel(r.bucket, gran) + ": " + r.received + " received, " + r.converted + " converted";
-      const hit = svg("rect", { x: L + band * i, y: T, width: band, height: ih, class: "hit", tabindex: 0, role: "img", "aria-label": label }, root);
-      const show = () => showTip(wrap, label, (cx(i) / W) * 100, (Math.min(y(r.received), y(r.converted)) / H) * 100);
-      hit.addEventListener("mouseenter", show); hit.addEventListener("focus", show);
-      hit.addEventListener("mouseleave", hideTip); hit.addEventListener("blur", hideTip);
-    });
-    wrap.appendChild(root);
-    tip = el("div", "", "tip"); tip.hidden = true; tip.setAttribute("aria-hidden", "true"); wrap.appendChild(tip);
   }
-  function showTip(wrap, text, xPct, yPct) {
-    if (!tip) return;
-    tip.textContent = text; tip.hidden = false;
-    tip.style.left = Math.min(Math.max(xPct, 18), 82) + "%"; tip.style.top = yPct + "%";
-  }
-  function hideTip() { if (tip) tip.hidden = true; }
-
-  // ------------------------------------------------------------ category donut
   function renderDonut(cats) {
-    const wrap = $("#donut"); wrap.replaceChildren();
-    const total = cats.reduce((a, c) => a + c.n, 0);
-    say("#dist-msg", total ? "" : "No requests in this period.");
-    if (!total) return;
-    const R = 62, C = 2 * Math.PI * R;
-    const root = svg("svg", { viewBox: "0 0 180 180", class: "donut", role: "img", "aria-label": "Quotes by category: " + cats.map((c) => (CATS[c.category] || "Other") + " " + Math.round((c.n / total) * 100) + "%").join(", ") });
-    const g = svg("g", { transform: "rotate(-90 90 90)" }, root);
-    svg("circle", { cx: 90, cy: 90, r: R, class: "donut-track" }, g);
-    let acc = 0;
-    const segs = cats.map((c) => {
-      const len = (c.n / total) * C, gap = cats.length > 1 ? 2 : 0;
-      const seg = svg("circle", { cx: 90, cy: 90, r: R, class: "seg cat-" + c.category, "stroke-dasharray": Math.max(len - gap, 0.5) + " " + C, "stroke-dashoffset": -acc }, g);
-      svg("title", {}, seg).textContent = (CATS[c.category] || "Other") + ": " + c.n + " (" + Math.round((c.n / total) * 100) + "%)";
-      acc += len;
-      return seg;
-    });
-    svg("text", { x: 90, y: 88, class: "donut-num", "text-anchor": "middle" }, root).textContent = total.toLocaleString();
-    svg("text", { x: 90, y: 106, class: "donut-cap", "text-anchor": "middle" }, root).textContent = total === 1 ? "request" : "requests";
-    wrap.appendChild(root);
-
-    const ul = el("ul", undefined, "donut-legend");
-    cats.forEach((c, i) => {
-      const li = el("li"); li.tabIndex = 0;
-      li.append(el("i", "", "sw cat-bg-" + c.category), el("span", CATS[c.category] || "Other", "lg-name"), el("strong", String(c.n)), el("span", Math.round((c.n / total) * 100) + "%", "lg-pct"));
-      const on = () => { root.classList.add("focus"); segs[i].classList.add("on"); }, off = () => { root.classList.remove("focus"); segs[i].classList.remove("on"); };
-      li.addEventListener("mouseenter", on); li.addEventListener("focus", on); li.addEventListener("mouseleave", off); li.addEventListener("blur", off);
-      ul.appendChild(li);
-    });
-    wrap.appendChild(ul);
+    Charts.donut($("#donut"), cats);
+    say("#dist-msg", cats.length ? "" : "No requests in this period.");
   }
 
   // ------------------------------------------------------------ recent requests table
@@ -275,29 +195,8 @@ window.Overview = (function () {
     } catch (e) { if (!authFail(e)) toast(e.message, "error"); }
   }
 
-  // ------------------------------------------------------------ quick view drawer
-  async function openQuickView(id) {
-    const d = $("#dlg-view");
-    $("#v-ref").textContent = "Loading…"; $("#v-fields").replaceChildren(); $("#v-status").replaceChildren(); say("#v-msg", "");
-    openDlg(d);
-    try {
-      const { quote } = await api("/quotes/" + id);
-      $("#v-ref").textContent = quote.reference;
-      $("#v-status").appendChild(pill(quote.status));
-      const dl = $("#v-fields");
-      const add = (k, v) => { dl.append(el("dt", k), el("dd", v)); };
-      add("Name", quote.name); add("Phone", quote.phone); if (quote.email) add("Email", quote.email);
-      add("Received", when(quote.created_at)); add("Assigned to", quote.assigned_name || "Unassigned");
-      const data = quote.form_data || {};
-      Object.keys(data).forEach((k) => { if (k !== "source") add(humanize(k), Array.isArray(data[k]) ? data[k].join(", ") : String(data[k])); });
-      if (data.source === "staff") add("Entered by", "Staff (phone or walk-in)");
-      $("#v-open").onclick = () => { d.close(); ctx.goto("quotes", { q: quote.reference }); };
-    } catch (e) {
-      if (authFail(e)) return;
-      $("#v-ref").textContent = "Request";
-      say("#v-msg", e.message, "error");
-    }
-  }
+  // ------------------------------------------------------------ quick view (the full detail drawer from quotes.js)
+  const openQuickView = (id) => Quotes.open(id, { onChange: load });
 
   // ------------------------------------------------------------ assign staff (managers)
   async function openAssign(q) {
@@ -322,7 +221,9 @@ window.Overview = (function () {
   }
 
   // ------------------------------------------------------------ create quote request
-  function openNew() {
+  let afterCreate = null;
+  function openNew(cb) {
+    afterCreate = typeof cb === "function" ? cb : null;
     $("#new-form").reset(); say("#n-msg", "");
     openDlg($("#dlg-new")); $("#n-name").focus();
   }
@@ -335,7 +236,7 @@ window.Overview = (function () {
     const btn = $("#n-save"); btn.disabled = true; say("#n-msg", "Creating…");
     try {
       const { quote } = await api("/quotes", { method: "POST", body });
-      $("#dlg-new").close(); toast("Request " + quote.reference + " created.", "ok"); load();
+      $("#dlg-new").close(); toast("Request " + quote.reference + " created.", "ok"); load(); if (afterCreate) afterCreate();
     } catch (e) { if (!authFail(e)) say("#n-msg", e.message, "error"); } finally { btn.disabled = false; }
   }
 
@@ -399,28 +300,17 @@ window.Overview = (function () {
     const btn = document.querySelector('[data-quick="pdf"]'); btn.disabled = true;
     try {
       const d = await api("/dashboard/overview?range=month");
-      const host = $("#print-report"); host.replaceChildren();
       const month = new Date().toLocaleDateString("en-GB", { month: "long", year: "numeric", timeZone: "Africa/Nairobi" });
-      const head = el("header", undefined, "pr-head");
-      const logo = document.createElement("img"); logo.src = "/staff/logo.png"; logo.alt = ""; logo.width = 52; logo.height = 33;
-      const t = el("div"); t.append(el("h1", "Jaza Insurance Agency"), el("p", "Monthly quote report · " + month));
-      head.append(logo, t); host.appendChild(head);
-      host.appendChild(el("p", "Prepared by " + ctx.me().name + " on " + when(new Date()) + (ctx.isManager() ? "." : ". Includes only requests assigned to you."), "pr-meta"));
       const rate = d.stats.total ? Math.round((d.stats.converted / d.stats.total) * 100) : 0;
-      const table = (cols, rows) => {
-        const tb = document.createElement("table"), th = document.createElement("thead"), tr = document.createElement("tr");
-        cols.forEach((c) => tr.appendChild(el("th", c))); th.appendChild(tr); tb.appendChild(th);
-        const body = document.createElement("tbody");
-        rows.forEach((r) => { const x = document.createElement("tr"); r.forEach((c) => x.appendChild(el("td", String(c)))); body.appendChild(x); });
-        tb.appendChild(body); return tb;
-      };
-      host.append(el("h2", "Summary"), table(["Measure", "Count"], [["Total quotes", d.stats.total], ...STATUSES.map((s) => [STATUS_TEXT[s], d.stats[s] || 0]), ["Conversion rate", rate + "%"]]));
-      host.append(el("h2", "By category"), table(["Category", "Requests", "Share"], d.categories.length ? d.categories.map((c) => [CATS[c.category] || "Other", c.n, Math.round((c.n / d.stats.total) * 100) + "%"]) : [["No requests this month", "", ""]]));
-      host.append(el("h2", "Latest requests"), table(["Request", "Client", "Type", "Submitted", "Status"], d.recent.map((q) => [q.reference, q.name, q.type_label, when(q.created_at), STATUS_TEXT[q.status]])));
-      host.hidden = false; document.body.classList.add("printing");
-      const done = () => { document.body.classList.remove("printing"); host.hidden = true; window.removeEventListener("afterprint", done); };
-      window.addEventListener("afterprint", done);
-      setTimeout(() => window.print(), 150);
+      Portal.printReport({
+        title: "Monthly quote report · " + month,
+        meta: "Prepared by " + ctx.me().name + " on " + when(new Date()) + (ctx.isManager() ? "." : ". Includes only requests assigned to you."),
+        sections: [
+          { title: "Summary", cols: ["Measure", "Count"], rows: [["Total quotes", d.stats.total], ...STATUSES.map((s) => [STATUS_TEXT[s], d.stats[s] || 0]), ["Conversion rate", rate + "%"]] },
+          { title: "By category", cols: ["Category", "Requests", "Share"], rows: d.categories.length ? d.categories.map((c) => [Charts.CATS[c.category] || "Other", c.n, Math.round((c.n / d.stats.total) * 100) + "%"]) : [["No requests this month", "", ""]] },
+          { title: "Latest requests", cols: ["Request", "Client", "Type", "Submitted", "Status"], rows: d.recent.map((q) => [q.reference, q.name, q.type_label, when(q.created_at), STATUS_TEXT[q.status]]) },
+        ],
+      });
       toast("In the print window, choose “Save as PDF”.");
     } catch (e) { if (!authFail(e)) toast(e.message, "error"); } finally { btn.disabled = false; }
   }
@@ -479,7 +369,7 @@ window.Overview = (function () {
     $("#g-from").addEventListener("change", onCustomChange);
     $("#g-to").addEventListener("change", onCustomChange);
     $("#g-cat").addEventListener("change", load);
-    $("#new-quote").addEventListener("click", openNew);
+    $("#new-quote").addEventListener("click", () => openNew());
     $("#new-form").addEventListener("submit", submitNew);
     $("#quote-form").addEventListener("submit", submitQuote);
     $("#remind-form").addEventListener("submit", submitReminders);
@@ -499,5 +389,5 @@ window.Overview = (function () {
     setInterval(() => { if (!document.hidden && !$("#section-dashboard").hidden) loadActivity(); }, 60000);
   }
 
-  return { init, load };
+  return { init, load, openNew, toast };
 })();

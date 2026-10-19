@@ -2,16 +2,13 @@
 // Dashboard page. The server only serves this page to a signed-in session; this script
 // still sends the visitor back to /staff if any call reports the session has ended.
 (function () {
-  const { $, el, say, when, api, rawFetch } = Portal;
+  const { $, say, api } = Portal;
 
   const LOGIN = "/staff";
   const SECTIONS = ["dashboard", "quotes", "reports", "profile", "settings"];
   const TITLES = { dashboard: "Dashboard", quotes: "Quote Requests", reports: "Reports", profile: "My Profile", settings: "Settings" };
-  const LABELS = { general: "Home page", motor: "Motor", medical: "Medical", home: "Home", travel: "Travel", agent: "Agent lead" };
-  const STATUS_TEXT = { new: "New", in_progress: "In progress", awaiting_client: "Awaiting client", quoted: "Quoted", converted: "Converted", closed: "Closed" };
-  const PAGE = 25;
 
-  let me = null, offset = 0, total = 0, current = null, active = "";
+  let me = null, active = "", pendingQuotes = null;
 
   const goLogin = () => window.location.replace(LOGIN);
 
@@ -25,11 +22,6 @@
     String(name || "").trim().split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0].toUpperCase()).join("") || "?";
   const roleText = (r) => (r ? r.charAt(0).toUpperCase() + r.slice(1) : "");
   const isManager = () => me && (me.role === "manager" || me.role === "admin");
-  // "buildingValue" becomes "Building value"
-  const humanize = (key) => {
-    const text = String(key).replace(/([a-z])([A-Z])/g, "$1 $2").replace(/[_-]+/g, " ").trim().toLowerCase();
-    return text.charAt(0).toUpperCase() + text.slice(1);
-  };
 
   // ---------------------------------------------------------------- navigation
   function setMenuOpen(open) {
@@ -51,8 +43,9 @@
     try { history.replaceState(null, "", "#" + name); } catch (e) { /* not essential */ }
     setMenuOpen(false);
     if (name === "dashboard") loadDashboard();
-    if (name === "quotes") loadList();
-    if (name === "profile") loadProfile();
+    if (name === "quotes") { Quotes.show(pendingQuotes || {}); pendingQuotes = null; }
+    if (name === "reports") Reports.show();
+    if (name === "profile") Profile.show();
     if (focusContent) $("#content").focus({ preventScroll: true });
   }
 
@@ -100,171 +93,18 @@
   // The dashboard widgets live in overview.js
   function loadDashboard() { Overview.load(); }
 
-  // Jump to Quote Requests with a search term and/or status already applied (used by the dashboard widgets).
+  // Jump to another page. For Quote Requests, opts can pre-apply a search, status or owner ({ q, status, assigned, open }).
   function goto(section, opts) {
-    opts = opts || {};
-    if (section === "quotes") { $("#f-q").value = opts.q || ""; $("#f-status").value = opts.status || ""; offset = 0; }
+    if (section === "quotes") pendingQuotes = Object.assign({ reset: true }, opts || {});
     switchSection(section, true);
   }
 
-  // ---------------------------------------------------------------- quote requests
-  function loadStatusFilter() {
-    const sel = $("#f-status");
-    if (sel.options.length > 1) return;
-    Object.keys(STATUS_TEXT).forEach((k) => { const o = el("option", STATUS_TEXT[k]); o.value = k; sel.appendChild(o); });
+  // After My Profile saves a new name the top bar and sidebar follow straight away.
+  function onNameChange(name) {
+    me.name = name;
+    $("#top-name").textContent = name; $("#top-initials").textContent = initials(name);
+    $("#acct-name").textContent = name; $("#acct-initials").textContent = initials(name);
   }
-
-  async function loadList() {
-    say("#list-msg", "Loading…");
-    const qs = new URLSearchParams({ limit: PAGE, offset });
-    if ($("#f-status").value) qs.set("status", $("#f-status").value);
-    if ($("#f-q").value.trim()) qs.set("q", $("#f-q").value.trim());
-    try {
-      const d = await api("/quotes?" + qs);
-      total = d.total;
-      const body = $("#rows"); body.replaceChildren();
-      d.quotes.forEach((q) => {
-        const tr = document.createElement("tr");
-        tr.tabIndex = 0;
-        tr.dataset.id = q.id;
-        if (current && current.id === q.id) tr.classList.add("sel");
-        const st = el("td"); st.appendChild(el("span", STATUS_TEXT[q.status] || q.status, "pill " + q.status));
-        [el("td", q.reference), el("td", q.name), el("td", LABELS[q.form_type] || q.form_type), st,
-         el("td", q.assigned_name || "Unassigned"), el("td", when(q.created_at))].forEach((c) => tr.appendChild(c));
-        const open = () => {
-          document.querySelectorAll("#rows tr").forEach((r) => r.classList.remove("sel"));
-          tr.classList.add("sel");
-          openQuote(q.id);
-        };
-        tr.addEventListener("click", open);
-        tr.addEventListener("keydown", (ev) => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); open(); } });
-        body.appendChild(tr);
-      });
-      say("#list-msg", d.quotes.length ? "" : "No quote requests found.");
-      $("#page-info").textContent = total ? "Showing " + (offset + 1) + " to " + (offset + d.quotes.length) + " of " + total : "";
-      $("#prev").disabled = offset === 0;
-      $("#next").disabled = offset + PAGE >= total;
-    } catch (e) {
-      if (handleAuthError(e)) return;
-      say("#list-msg", e.message, "error");
-    }
-  }
-
-  $("#filters").addEventListener("submit", (ev) => { ev.preventDefault(); offset = 0; loadList(); });
-  $("#f-status").addEventListener("change", () => { offset = 0; loadList(); });
-  $("#prev").addEventListener("click", () => { offset = Math.max(0, offset - PAGE); loadList(); });
-  $("#next").addEventListener("click", () => { offset += PAGE; loadList(); });
-
-  async function openQuote(id) {
-    say("#d-msg", "");
-    try {
-      const { quote, statuses } = await api("/quotes/" + id);
-      current = quote;
-      $("#detail").hidden = false;
-      $("#d-ref").textContent = quote.reference;
-      const dl = $("#d-fields"); dl.replaceChildren();
-      const add = (k, v) => { dl.appendChild(el("dt", k)); dl.appendChild(el("dd", v)); };
-      add("Type", LABELS[quote.form_type] || quote.form_type);
-      add("Name", quote.name);
-      add("Phone", quote.phone);
-      if (quote.email) add("Email", quote.email);
-      add("Received", when(quote.created_at));
-      const data = quote.form_data || {};
-      Object.keys(data).forEach((k) => add(humanize(k), Array.isArray(data[k]) ? data[k].join(", ") : String(data[k])));
-      const st = $("#d-status"); st.replaceChildren();
-      statuses.forEach((s) => { const o = el("option", STATUS_TEXT[s] || s); o.value = s; if (s === quote.status) o.selected = true; st.appendChild(o); });
-      const wrap = $("#d-assign-wrap");
-      wrap.hidden = !isManager();
-      if (!wrap.hidden) {
-        const { staff } = await api("/staff");
-        const as = $("#d-assign"); as.replaceChildren();
-        const none = el("option", "Unassigned"); none.value = ""; as.appendChild(none);
-        staff.forEach((p) => { const o = el("option", p.full_name + (p.job_title ? " (" + p.job_title + ")" : "")); o.value = p.id; if (p.id === quote.assigned_to) o.selected = true; as.appendChild(o); });
-      }
-    } catch (e) {
-      if (handleAuthError(e)) return;
-      say("#d-msg", e.message, "error");
-    }
-  }
-
-  $("#d-close").addEventListener("click", () => {
-    $("#detail").hidden = true;
-    current = null;
-    document.querySelectorAll("#rows tr").forEach((r) => r.classList.remove("sel"));
-  });
-
-  $("#d-save").addEventListener("click", async () => {
-    if (!current) return;
-    const button = $("#d-save");
-    button.disabled = true;
-    say("#d-msg", "Saving…");
-    try {
-      if (!$("#d-assign-wrap").hidden) {
-        const v = $("#d-assign").value;
-        if ((v === "" ? null : Number(v)) !== current.assigned_to) await api("/quotes/" + current.id + "/assign", { method: "PATCH", body: { staffId: v === "" ? null : Number(v) } });
-      }
-      await api("/quotes/" + current.id + "/status", { method: "PATCH", body: { status: $("#d-status").value } });
-      const id = current.id;
-      await loadList();
-      await openQuote(id);
-      say("#d-msg", "Changes saved.", "ok"); // reached only after the server accepted both updates
-    } catch (e) {
-      if (handleAuthError(e)) return;
-      say("#d-msg", e.message, "error");
-    } finally {
-      button.disabled = false;
-    }
-  });
-
-  // ---------------------------------------------------------------- profile
-  async function loadProfile() {
-    say("#profile-msg", "Loading…");
-    try {
-      const { profile } = await api("/profile");
-      const dl = $("#profile-fields"); dl.replaceChildren();
-      const add = (k, v) => { dl.appendChild(el("dt", k)); dl.appendChild(el("dd", v || "—")); };
-      add("Full name", profile.full_name);
-      add("Work email", profile.email);
-      add("Role", roleText(profile.role));
-      add("Job title", profile.job_title);
-      add("Last sign-in", profile.last_login_at ? when(profile.last_login_at) : "Not recorded yet");
-      say("#profile-msg", "");
-    } catch (e) {
-      if (handleAuthError(e)) return;
-      say("#profile-msg", e.message, "error");
-    }
-  }
-
-  // ---------------------------------------------------------------- reports
-  $("#report-form").addEventListener("submit", async (ev) => {
-    ev.preventDefault();
-    const from = $("#report-from").value, to = $("#report-to").value; // YYYY-MM-DD, the format the server expects
-    if (!from || !to) return say("#report-msg", "Choose both a start date and an end date.", "error");
-    if (from > to) return say("#report-msg", "The start date must be on or before the end date.", "error");
-    const button = $("#report-download");
-    button.disabled = true;
-    say("#report-msg", "Preparing your CSV…");
-    try {
-      const res = await rawFetch("/reports.csv?" + new URLSearchParams({ from, to }));
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        const err = new Error(data.message || "Could not create the report.");
-        err.status = res.status; err.code = data.code;
-        throw err;
-      }
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url; a.download = "jaza-quote-report-" + from + "-to-" + to + ".csv";
-      document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
-      say("#report-msg", "Report downloaded.", "ok"); // reached only after the server returned the file
-    } catch (e) {
-      if (handleAuthError(e)) return;
-      say("#report-msg", e.message || "Could not create the report.", "error");
-    } finally {
-      button.disabled = false;
-    }
-  });
 
   // ---------------------------------------------------------------- settings
   $("#settings-password-form").addEventListener("submit", async (ev) => {
@@ -305,8 +145,8 @@
     $("#top-initials").textContent = initials(user.name);
     $("#acct-name").textContent = user.name;
     $("#acct-initials").textContent = initials(user.name);
-    loadStatusFilter();
-    Overview.init({ me: () => me, isManager, goto, authError: handleAuthError });
+    const context = { me: () => me, isManager, goto, authError: handleAuthError, onNameChange };
+    Overview.init(context); Quotes.init(context); Reports.init(context); Profile.init(context);
 
     const hash = window.location.hash.replace("#", "");
     switchSection(SECTIONS.includes(hash) ? hash : "dashboard");

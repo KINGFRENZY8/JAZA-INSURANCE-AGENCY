@@ -6,7 +6,9 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node --watch server.js"
+    "dev": "node --watch server.js",
+    "check:portal": "node scripts/check-portal.js",
+    "db:apply": "node scripts/apply-sql.js"
   },
   "engines": {
     "node": ">=18"
